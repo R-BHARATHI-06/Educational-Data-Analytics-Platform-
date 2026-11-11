@@ -1,0 +1,7 @@
+name,role,minCgpa,package,skills,match,minInternships,certs,department,additional
+TCS,Software Engineer,7.0,Rs 6-7 LPA,Java|Python,any,0,Java SE,CS/IT/ECE,No arrears
+Infosys,Systems Engineer,6.5,Rs 5-6 LPA,Programming,any,0,Python for Data Science,Any,No active backlogs
+Wipro,Project Engineer,6.0,Rs 5.5 LPA,Java|Python,any,0,Cloud Practitioner,CS/IT,-
+Zoho,Member Technical Staff,7.5,Rs 7-12 LPA,Java|SQL|DSA,all,0,Oracle Java SE,CS/IT,Strong DSA
+Google,Software Engineer,9.0,Rs 25+ LPA,DSA|System Design|Python,all,3,Google Cloud ACE,CS Only,LeetCode 300+
+ZUSPAY,Custom Role,8,Configured,dsa|JAVA,all,0,,CS/IT Only,NIL

@@ -1,0 +1,9 @@
+name,regNo,cgpa,department,skills,internships,certifications
+Arjun Kumar,21CS042,8.5,Computer Science,Java|Python|SQL|Web Development|Machine Learning,2,AWS Cloud Practitioner
+Divya Prakash,21CS023,9.2,Computer Science,Java|React|Machine Learning|DSA|System Design|Python,3,Google Cloud ACE
+Rahul Srinivasan,21CS088,6.8,Information Technology,Python|SQL|Web Development,0,Python for Data Science
+Ankit Thomas,21CS102,5.9,Computer Science,Python,0,
+Kavya Raman,21IT017,7.8,Information Technology,Java|SQL|DSA,1,Oracle Java SE
+Sneha Rao,21CS001,9.6,Computer Science,DSA|System Design|Python|Cloud Computing|Java,4,Google Cloud ACE|AWS Cloud Practitioner
+Mohan Kumar,21CS014,8.1,Computer Science,Java|Python|Cloud Computing,1,Cloud Practitioner
+Priya Lakshmi,21IT058,8.4,Information Technology,Java|SQL|React|DSA,2,Oracle Java SE

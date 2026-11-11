@@ -1,0 +1,2267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduAnalytics Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --purple:#6C3FC5;--purple-light:#8B5CF6;--purple-dark:#4C1D95;
+  --blue:#2563EB;--blue-light:#3B82F6;--blue-dark:#1E40AF;
+  --grad:linear-gradient(135deg,#6C3FC5 0%,#3B82F6 100%);
+  --grad2:linear-gradient(135deg,#4C1D95 0%,#1E40AF 100%);
+  --sidebar-w:240px;--white:#fff;--bg:#F4F6FB;
+  --text:#1e1b4b;--text2:#6b7280;--text3:#9ca3af;
+  --border:#e5e7eb;--card:#fff;--radius:12px;--radius-sm:8px;
+  --shadow:0 2px 12px rgba(0,0,0,.08);--shadow-lg:0 8px 32px rgba(0,0,0,.12);
+  --green:#10b981;--red:#ef4444;--amber:#f59e0b;--cyan:#06b6d4;
+}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* LOGIN */
+.login-wrap{display:flex;min-height:100vh;background:#fff;overflow:hidden}
+.login-left{flex:1.05;min-height:100vh;background:linear-gradient(140deg,#e14bb9 0%,#8b63df 46%,#3b82f6 100%);background-size:220% 220%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px;position:relative;overflow:hidden;animation:loginGradient 10s ease-in-out infinite}
+.login-left::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.48) 0 1.5px,transparent 1.8px);background-size:120px 120px;opacity:.5;animation:starDrift 18s linear infinite}
+.login-left::after{content:'';position:absolute;inset:-20%;background:radial-gradient(circle at 16% 18%,rgba(255,255,255,.22),transparent 8%),radial-gradient(circle at 78% 78%,rgba(255,255,255,.18),transparent 7%),radial-gradient(circle at 34% 62%,rgba(255,255,255,.12),transparent 8%);filter:blur(.2px);animation:softPulse 8s ease-in-out infinite}
+.login-left h1{font-size:44px;font-weight:800;color:#fff;line-height:1.05;margin-bottom:14px;position:relative;z-index:2;text-shadow:0 12px 34px rgba(31,41,102,.2)}
+.login-left p{color:rgba(255,255,255,.88);font-size:13px;max-width:320px;line-height:1.6;position:relative;z-index:2}
+.shape{position:absolute;z-index:1;opacity:.42;animation:floatShape 7s ease-in-out infinite}
+.shape.circle{width:70px;height:70px;border-radius:50%;top:17%;left:7%;background:rgba(255,255,255,.24);border:1px solid rgba(255,255,255,.16)}
+.shape.diamond{width:48px;height:48px;border-radius:12px;transform:rotate(17deg);bottom:14%;right:16%;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.15);animation-delay:-2.5s}
+.shape.triangle-shape{width:0;height:0;border:none;border-left:26px solid transparent;border-right:26px solid transparent;border-bottom:46px solid rgba(255,255,255,.2);top:49%;left:26%;transform:rotate(80deg);animation-delay:-4s}
+.shape.circle2{width:8px;height:8px;border-radius:50%;top:34%;right:39%;background:rgba(255,255,255,.5);animation-delay:-1s}
+.login-right{width:51%;min-width:460px;display:flex;align-items:center;justify-content:center;padding:48px;background:#fff}
+.login-card{width:100%;max-width:280px;background:#fff;border:1px solid rgba(226,232,240,.7);border-radius:24px;padding:38px 34px;box-shadow:0 22px 60px rgba(30,27,75,.09);animation:cardRise .7s ease both}
+.login-card h2{font-size:26px;font-weight:800;margin-bottom:6px;color:#111827;text-align:center}
+.login-card .sub{color:#8b93a7;font-size:11px;margin-bottom:26px;text-align:center}
+.role-tabs{display:flex;gap:6px;background:#f4f7ff;border-radius:12px;padding:5px;margin-bottom:24px}
+.role-tab{flex:1;padding:9px 6px;text-align:center;font-size:11px;font-weight:700;cursor:pointer;border-radius:9px;color:#64748b;transition:.25s;white-space:nowrap}
+.role-tab.active{background:#fff;color:#6d5cf6;box-shadow:0 8px 20px rgba(99,102,241,.14)}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:11px;font-weight:800;color:#1f2937;margin-bottom:7px;text-transform:none;letter-spacing:0}
+.form-group input{width:100%;padding:12px 14px;border:1.5px solid #d7ddf2;border-radius:10px;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;outline:none;transition:.2s;color:#111827;background:#eef4ff}
+.form-group input:focus{border-color:#8b63df;background:#f8fbff;box-shadow:0 0 0 4px rgba(139,99,223,.14)}
+.btn-primary{width:100%;padding:13px;background:linear-gradient(135deg,#925cff 0%,#3b82f6 100%);color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-size:12px;font-weight:800;cursor:pointer;transition:.25s;letter-spacing:0;box-shadow:0 12px 24px rgba(59,130,246,.26)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 16px 28px rgba(99,102,241,.3)}
+.login-footer{text-align:center;margin-top:18px;font-size:10px;color:#7b8498}
+.login-footer a{color:#6d5cf6;font-weight:800;cursor:pointer}
+.badge-logo{display:none}
+@keyframes loginGradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes starDrift{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-120px,120px,0)}}
+@keyframes softPulse{0%,100%{opacity:.72;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
+@keyframes floatShape{0%,100%{translate:0 0}50%{translate:14px -18px}}
+@keyframes cardRise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@media (max-width:900px){
+  .login-wrap{flex-direction:column}
+  .login-left{min-height:42vh;padding:44px 24px}
+  .login-left h1{font-size:36px}
+  .login-right{width:100%;min-width:0;min-height:58vh;padding:32px 18px}
+  .login-card{max-width:360px;padding:32px 24px}
+}
+
+/* APP SHELL */
+.app{display:none;min-height:100vh}
+.app.active{display:flex}
+.sidebar{width:var(--sidebar-w);background:var(--grad2);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-logo .logo-text{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.sidebar-logo .logo-sub{font-size:10px;color:rgba(255,255,255,.6);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.nav-section{padding:16px 12px 8px;font-size:10px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:1.5px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;margin:2px 8px;border-radius:10px;color:rgba(255,255,255,.7);font-size:13px;font-weight:500;cursor:pointer;transition:.2s}
+.nav-item:hover{background:rgba(255,255,255,.1);color:#fff}
+.nav-item.active{background:rgba(255,255,255,.2);color:#fff}
+.nav-item .nav-icon{font-size:16px;width:20px;text-align:center}
+.sidebar-bottom{margin-top:auto;padding:16px;border-top:1px solid rgba(255,255,255,.1)}
+.profile-mini{display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:10px;cursor:pointer}
+.profile-mini:hover{background:rgba(255,255,255,.1)}
+.avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.profile-mini .pname{font-size:12px;font-weight:600;color:#fff}
+.profile-mini .prole{font-size:10px;color:rgba(255,255,255,.6)}
+.logout-btn{display:flex;align-items:center;gap:8px;padding:8px 16px;margin:4px 8px;border-radius:8px;color:rgba(255,255,255,.6);font-size:12px;cursor:pointer;transition:.2s}
+.logout-btn:hover{color:#fff;background:rgba(255,255,255,.1)}
+
+/* MAIN CONTENT */
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh}
+.topbar{background:#fff;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.topbar h2{font-size:20px;font-weight:700;color:var(--text)}
+.topbar .breadcrumb{font-size:12px;color:var(--text2);margin-top:2px}
+.topbar-actions{display:flex;align-items:center;gap:12px}
+.notif-btn{width:36px;height:36px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:18px;border:1px solid var(--border)}
+.content{padding:24px 28px}
+
+/* CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi-card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(108,63,197,.08),rgba(59,130,246,.08));transform:translate(20px,-20px)}
+.kpi-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.kpi-value{font-size:28px;font-weight:700;color:var(--text);line-height:1}
+.kpi-sub{font-size:12px;color:var(--text2);margin-top:6px}
+.kpi-icon{position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.kpi-purple{background:rgba(108,63,197,.1);color:var(--purple)}
+.kpi-blue{background:rgba(37,99,235,.1);color:var(--blue)}
+.kpi-green{background:rgba(16,185,129,.1);color:var(--green)}
+.kpi-amber{background:rgba(245,158,11,.1);color:var(--amber)}
+.kpi-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;margin-top:8px}
+.badge-placed{background:rgba(16,185,129,.1);color:#065f46}
+.badge-pending{background:rgba(245,158,11,.1);color:#92400e}
+.badge-notplaced{background:rgba(239,68,68,.1);color:#991b1b}
+
+/* GRID LAYOUTS */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+.chart-card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.chart-card.full{grid-column:1/-1}
+.chart-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.chart-sub{font-size:12px;color:var(--text2);margin-bottom:16px}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{background:#f8f9ff;padding:10px 14px;text-align:left;font-weight:600;color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+.data-table td{padding:12px 14px;border-bottom:1px solid #f3f4f6;color:var(--text)}
+.data-table tr:hover td{background:#fafbff}
+.data-table tr:last-child td{border-bottom:none}
+.status-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px}
+.pill-green{background:rgba(16,185,129,.1);color:#065f46}
+.pill-red{background:rgba(239,68,68,.1);color:#991b1b}
+.pill-amber{background:rgba(245,158,11,.1);color:#92400e}
+.pill-blue{background:rgba(37,99,235,.1);color:#1e40af}
+.pill-purple{background:rgba(108,63,197,.1);color:#4c1d95}
+
+/* INFO BANNER */
+.info-banner{background:linear-gradient(135deg,rgba(108,63,197,.06),rgba(59,130,246,.06));border:1px solid rgba(108,63,197,.15);border-radius:var(--radius);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:16px}
+.info-banner .avatar-lg{width:56px;height:56px;border-radius:14px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0}
+.info-banner h3{font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px}
+.info-banner p{font-size:13px;color:var(--text2)}
+
+/* FORMS */
+.form-card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:20px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.form-row.single{grid-template-columns:1fr}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select,.field textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Sora',sans-serif;font-size:13px;outline:none;transition:.2s;color:var(--text);background:#fafafa}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--purple-light);background:#fff}
+.field textarea{resize:vertical;min-height:80px}
+.btn-save{padding:12px 24px;background:var(--grad);color:#fff;border:none;border-radius:8px;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.btn-save:hover{opacity:.9}
+.btn-outline{padding:10px 20px;background:transparent;border:1.5px solid var(--purple);color:var(--purple);border-radius:8px;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.btn-outline:hover{background:rgba(108,63,197,.05)}
+.btn-sm{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:.2s}
+.btn-edit{background:rgba(37,99,235,.1);color:var(--blue)}
+.btn-del{background:rgba(239,68,68,.1);color:var(--red)}
+
+/* SKILL TAGS */
+.skill-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(108,63,197,.08);color:var(--purple);border:1px solid rgba(108,63,197,.2);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600}
+.skill-tag .remove{cursor:pointer;opacity:.6;font-size:14px;line-height:1}
+.skill-tag .remove:hover{opacity:1}
+.skills-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.add-skill-row{display:flex;gap:8px}
+.add-skill-row input{flex:1;padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;outline:none;font-family:'Sora',sans-serif}
+.add-skill-row input:focus{border-color:var(--purple-light)}
+
+/* CERT UPLOAD */
+.cert-upload{border:2px dashed rgba(108,63,197,.3);border-radius:var(--radius);padding:32px;text-align:center;cursor:pointer;transition:.2s;background:rgba(108,63,197,.02)}
+.cert-upload:hover{border-color:var(--purple);background:rgba(108,63,197,.04)}
+.cert-upload.dragging{border-color:var(--blue);background:rgba(37,99,235,.06)}
+.cert-upload-icon{font-size:36px;margin-bottom:8px}
+.cert-upload p{font-size:13px;color:var(--text2)}
+.cert-upload span{font-weight:600;color:var(--purple)}
+.cert-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.cert-item{background:#f8f9ff;border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.cert-item .cert-icon{font-size:28px;margin-bottom:8px}
+.cert-item .cert-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.cert-item .cert-date{font-size:11px;color:var(--text2)}
+.cert-item .cert-badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:10px;background:rgba(16,185,129,.1);color:#065f46;margin-top:6px;display:inline-block}
+
+/* COMPANY ELIGIBILITY */
+.company-card{background:var(--card);border-radius:var(--radius);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:12px}
+.company-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.company-name{font-size:16px;font-weight:700;color:var(--text)}
+.company-role{font-size:12px;color:var(--text2);margin-top:2px}
+.eligibility-indicator{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:8px 16px;border-radius:10px}
+.elig-yes{background:rgba(16,185,129,.1);color:#065f46}
+.elig-no{background:rgba(239,68,68,.1);color:#991b1b}
+.criteria-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.crit-item{display:flex;align-items:center;gap:6px;background:#f8f9ff;border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px}
+.crit-item .crit-label{color:var(--text2)}
+.crit-item .crit-val{font-weight:600;color:var(--text)}
+.crit-met{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.04)}
+.crit-fail{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.04)}
+
+/* ALUMNI */
+.alumni-card{background:var(--card);border-radius:var(--radius);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);display:flex;gap:16px;margin-bottom:12px}
+.alumni-av{width:56px;height:56px;border-radius:14px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0}
+.alumni-av.v2{background:linear-gradient(135deg,#10b981,#06b6d4)}
+.alumni-av.v3{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+.alumni-info h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.alumni-info p{font-size:12px;color:var(--text2);margin-bottom:8px}
+.alumni-tags{display:flex;flex-wrap:wrap;gap:6px}
+.alumni-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(37,99,235,.08);color:var(--blue)}
+
+/* DEADLINE */
+.deadline-card{background:var(--card);border-radius:var(--radius);padding:18px 20px;border:1px solid var(--border);box-shadow:var(--shadow);display:flex;align-items:center;gap:16px;margin-bottom:10px}
+.deadline-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.dl-red{background:rgba(239,68,68,.1)}
+.dl-amber{background:rgba(245,158,11,.1)}
+.dl-green{background:rgba(16,185,129,.1)}
+.deadline-info{flex:1}
+.deadline-info h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
+.deadline-info p{font-size:12px;color:var(--text2)}
+.days-chip{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.days-urgent{background:rgba(239,68,68,.1);color:#991b1b}
+.days-soon{background:rgba(245,158,11,.1);color:#92400e}
+.days-ok{background:rgba(16,185,129,.1);color:#065f46}
+
+/* PLACEMENT */
+.placement-banner{background:var(--grad);border-radius:var(--radius);padding:24px;color:#fff;display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.placement-banner h2{font-size:22px;font-weight:700;margin-bottom:4px}
+.placement-banner p{opacity:.8;font-size:14px}
+.placement-detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.pd-item{background:rgba(255,255,255,.15);border-radius:10px;padding:16px;backdrop-filter:blur(4px)}
+.pd-item .pd-label{font-size:11px;opacity:.7;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.pd-item .pd-val{font-size:22px;font-weight:700}
+
+/* RECOMMENDATION */
+.rec-card{background:linear-gradient(135deg,rgba(108,63,197,.04),rgba(59,130,246,.04));border:1px solid rgba(108,63,197,.15);border-radius:var(--radius);padding:18px;margin-bottom:12px}
+.rec-card h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px}
+.rec-card p{font-size:13px;color:var(--text2);line-height:1.6}
+.rec-icon{font-size:24px;margin-bottom:8px}
+
+/* INTERNSHIP */
+.intern-card{background:var(--card);border-radius:var(--radius);padding:18px 20px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:12px}
+.intern-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.intern-co{font-size:15px;font-weight:700;color:var(--text)}
+.intern-role{font-size:12px;color:var(--text2);margin-top:2px}
+.intern-meta{display:flex;gap:12px;flex-wrap:wrap}
+.intern-meta-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+
+/* SECTION HEADER */
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.section-title{font-size:16px;font-weight:700;color:var(--text)}
+.section-sub{font-size:12px;color:var(--text2);margin-top:2px}
+
+/* SEARCH */
+.search-bar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 14px;margin-bottom:20px}
+.search-bar input{flex:1;border:none;outline:none;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);background:transparent}
+.search-bar span{color:var(--text3);font-size:18px}
+
+/* PAGE VISIBILITY */
+.page{display:none}
+.page.active{display:block}
+
+/* TABS */
+.tab-bar{display:flex;gap:0;background:#f3f4f6;border-radius:10px;padding:4px;margin-bottom:20px;width:fit-content}
+.tab-btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:.2s;border:none;background:transparent;font-family:'Sora',sans-serif}
+.tab-btn.active{background:var(--grad);color:#fff}
+
+/* STAT ROW */
+.stat-row{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.stat-mini{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;flex:1;min-width:120px}
+.stat-mini .sm-val{font-size:24px;font-weight:700;color:var(--text)}
+.stat-mini .sm-label{font-size:11px;color:var(--text2);margin-top:4px}
+
+/* YEAR FILTER */
+.year-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.year-chip{padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);color:var(--text2);transition:.2s;background:var(--card)}
+.year-chip.active{background:var(--grad);color:#fff;border-color:transparent}
+
+/* ALUMNI SUB SIDEBAR */
+.alumni-sub{display:flex;gap:20px;margin-bottom:20px}
+.alumni-sub-nav{display:flex;flex-direction:column;gap:4px;min-width:160px}
+.alumni-sub-item{padding:10px 14px;border-radius:8px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:.2s}
+.alumni-sub-item.active{background:rgba(108,63,197,.1);color:var(--purple);font-weight:600}
+.alumni-sub-content{flex:1}
+
+/* PROGRESS BAR */
+.progress-bar{background:#f3f4f6;border-radius:100px;height:8px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;border-radius:100px;background:var(--grad)}
+
+/* NOTIFICATION BADGE */
+.notif-dot{width:8px;height:8px;background:var(--red);border-radius:50%;position:absolute;top:8px;right:8px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="login-wrap" id="loginPage">
+  <div class="login-left">
+    <div class="shape circle"></div>
+    <div class="shape diamond"></div>
+    <div class="shape triangle-shape"></div>
+    <div class="shape circle2"></div>
+    <div class="badge-logo">
+      <span>🎓</span>
+      <span>EduAnalytics Portal</span>
+    </div>
+    <h1>Welcome<br>Back!</h1>
+    <p>Access your institutional intelligence dashboard and insights — powered by real-time data analytics.</p>
+  </div>
+  <div class="login-right">
+    <div class="login-card">
+      <h2>Sign In</h2>
+      <p class="sub">Select your role and enter credentials</p>
+      <div class="role-tabs">
+        <div class="role-tab active" onclick="setRole(this,'Student')">🎓 Student</div>
+        <div class="role-tab" onclick="setRole(this,'Faculty')">👨‍🏫 Faculty</div>
+        <div class="role-tab" onclick="setRole(this,'Admin')">🔐 Admin</div>
+      </div>
+      <div class="form-group">
+        <label id="loginLabel">Register Number</label>
+        <input type="text" id="loginId" placeholder="e.g. 21CS042" value="21CS042">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="Enter your password" value="••••••••">
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Log In to Portal →</button>
+      <div class="login-footer">Don't have an account? <a onclick="alert('Registration form would open here.')">Register Now</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT APP -->
+<div class="app" id="studentApp">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-text">🎓 EduAnalytics</div>
+      <div class="logo-sub">Institutional Portal</div>
+    </div>
+    <div class="nav-section">Main</div>
+    <div class="nav-item active" onclick="showPage('student','sDash',this)"><span class="nav-icon">📊</span>Dashboard</div>
+    <div class="nav-item" onclick="showPage('student','sAcad',this)"><span class="nav-icon">📚</span>Academic Performance</div>
+    <div class="nav-item" onclick="showPage('student','sSkills',this)"><span class="nav-icon">⚡</span>Skills & Certifications</div>
+    <div class="nav-item" onclick="showPage('student','sIntern',this)"><span class="nav-icon">💼</span>Internships</div>
+    <div class="nav-item" onclick="showPage('student','sPlacement',this)"><span class="nav-icon">🏆</span>Placement Status</div>
+    <div class="nav-item" onclick="showPage('student','sRec',this)"><span class="nav-icon">💡</span>Recommendations</div>
+    <div class="nav-item" onclick="showPage('student','sDeadlines',this)"><span class="nav-icon">📅</span>Deadlines</div>
+    <div class="nav-item" onclick="showPage('student','sEligibility',this)"><span class="nav-icon">🏢</span>Company Eligibility</div>
+    <div class="nav-item" onclick="showPage('student','sAlumni',this)"><span class="nav-icon">🌐</span>Alumni Insights</div>
+    <div class="sidebar-bottom">
+      <div class="profile-mini">
+        <div class="avatar">AK</div>
+        <div><div class="pname">Arjun Kumar</div><div class="prole">Student · CS</div></div>
+      </div>
+      <div class="logout-btn" onclick="logout()">🚪 Logout</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <div><h2 id="sTopTitle">Dashboard Overview</h2><div class="breadcrumb" id="sTopBread">Home / Dashboard</div></div>
+      <div class="topbar-actions">
+        <div style="position:relative"><div class="notif-btn">🔔</div><div class="notif-dot"></div></div>
+        <div class="notif-btn">⚙️</div>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- STUDENT DASHBOARD -->
+      <div class="page active" id="sDash">
+        <div class="info-banner">
+          <div class="avatar-lg">AK</div>
+          <div>
+            <h3>Arjun Kumar</h3>
+            <p>Reg No: 21CS042 &nbsp;·&nbsp; bdgk2027@gmail.com &nbsp;·&nbsp; Department of Computer Science</p>
+          </div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">CGPA</div>
+            <div class="kpi-value">8.50</div>
+            <div class="kpi-sub">Out of 10.0 scale</div>
+            <div class="kpi-icon kpi-purple">📈</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Department</div>
+            <div class="kpi-value" style="font-size:18px;margin-top:4px">Computer Science</div>
+            <div class="kpi-sub">B.Tech Programme</div>
+            <div class="kpi-icon kpi-blue">🎓</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Current Year</div>
+            <div class="kpi-value">3<sup style="font-size:16px">rd</sup></div>
+            <div class="kpi-sub">Semester 6 · 2023–24</div>
+            <div class="kpi-icon kpi-amber">📅</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Placement Status</div>
+            <div class="kpi-value" style="font-size:20px;margin-top:6px">PLACED</div>
+            <div class="kpi-badge badge-placed">✅ TCS · ₹6.0 LPA</div>
+            <div class="kpi-icon kpi-green">🏆</div>
+          </div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">CGPA Trend</div>
+            <div class="chart-sub">Semester-wise academic performance</div>
+            <div style="position:relative;height:220px"><canvas id="cgpaTrend" role="img" aria-label="CGPA trend chart across 6 semesters">CGPA trend from sem 1 to 6.</canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Skills Overview</div>
+            <div class="chart-sub">Current skill proficiency levels</div>
+            <div style="position:relative;height:220px"><canvas id="skillsRadar" role="img" aria-label="Radar chart showing skill proficiency">Skill radar chart.</canvas></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="section-header">
+            <div><div class="chart-title">Recent Activity</div><div class="chart-sub">Latest updates & notifications</div></div>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>Activity</th><th>Details</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>TCS Placement Drive</td><td>Written test cleared, Interview scheduled</td><td>2024-03-10</td><td><span class="status-pill pill-green">✅ Placed</span></td></tr>
+              <tr><td>Skill Certification</td><td>AWS Cloud Practitioner uploaded</td><td>2024-03-05</td><td><span class="status-pill pill-blue">📄 Verified</span></td></tr>
+              <tr><td>Internship Completion</td><td>Infosys Summer Internship — 8 weeks</td><td>2024-01-20</td><td><span class="status-pill pill-purple">✔ Done</span></td></tr>
+              <tr><td>Assessment Deadline</td><td>Design Thinking Assignment due</td><td>2024-03-15</td><td><span class="status-pill pill-amber">⏳ Pending</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ACADEMIC PERFORMANCE -->
+      <div class="page" id="sAcad">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Average CGPA</div><div class="kpi-value">8.50</div><div class="kpi-icon kpi-purple">📈</div></div>
+          <div class="kpi-card"><div class="kpi-label">Current Semester</div><div class="kpi-value">6</div><div class="kpi-icon kpi-blue">📚</div></div>
+          <div class="kpi-card"><div class="kpi-label">Current Year</div><div class="kpi-value">3<sup style="font-size:16px">rd</sup></div><div class="kpi-icon kpi-amber">🗓</div></div>
+          <div class="kpi-card"><div class="kpi-label">Class Rank</div><div class="kpi-value">#4</div><div class="kpi-sub">Top 5% of batch</div><div class="kpi-icon kpi-green">🏅</div></div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Academic History</div>
+            <div class="chart-sub">Year-wise performance</div>
+            <table class="data-table" style="margin-top:8px">
+              <thead><tr><th>Year</th><th>Semester</th><th>CGPA</th><th>Department</th></tr></thead>
+              <tbody>
+                <tr><td>1st Year</td><td>Sem 1</td><td><b>8.2</b></td><td>Computer Science</td></tr>
+                <tr><td>1st Year</td><td>Sem 2</td><td><b>8.4</b></td><td>Computer Science</td></tr>
+                <tr><td>2nd Year</td><td>Sem 3</td><td><b>8.6</b></td><td>Computer Science</td></tr>
+                <tr><td>2nd Year</td><td>Sem 4</td><td><b>8.5</b></td><td>Computer Science</td></tr>
+                <tr><td>3rd Year</td><td>Sem 5</td><td><b>8.7</b></td><td>Computer Science</td></tr>
+                <tr><td>3rd Year</td><td>Sem 6</td><td><b>8.5</b></td><td>Computer Science</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">CGPA Progression</div>
+            <div class="chart-sub">Semester-wise trend</div>
+            <div style="position:relative;height:240px"><canvas id="acadChart" role="img" aria-label="Bar chart showing CGPA by semester">CGPA by semester.</canvas></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title" style="margin-bottom:16px">All Semester Marks</div>
+          <div class="tab-bar" id="semTabs">
+            <div class="tab-btn active" onclick="setSemTab(this,'sem1')">Sem 1</div>
+            <div class="tab-btn" onclick="setSemTab(this,'sem2')">Sem 2</div>
+            <div class="tab-btn" onclick="setSemTab(this,'sem3')">Sem 3</div>
+            <div class="tab-btn" onclick="setSemTab(this,'sem4')">Sem 4</div>
+            <div class="tab-btn" onclick="setSemTab(this,'sem5')">Sem 5</div>
+            <div class="tab-btn" onclick="setSemTab(this,'sem6')">Sem 6</div>
+          </div>
+          <div id="sem1" class="sem-marks">
+            <table class="data-table">
+              <thead><tr><th>Subject</th><th>Code</th><th>Internal</th><th>External</th><th>Total</th><th>Grade</th></tr></thead>
+              <tbody>
+                <tr><td>Engineering Mathematics I</td><td>MA101</td><td>45/50</td><td>72/100</td><td>117/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Engineering Physics</td><td>PH101</td><td>42/50</td><td>68/100</td><td>110/150</td><td><span class="status-pill pill-blue">A+</span></td></tr>
+                <tr><td>Problem Solving & Python</td><td>CS101</td><td>48/50</td><td>78/100</td><td>126/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Engineering Graphics</td><td>ME101</td><td>40/50</td><td>65/100</td><td>105/150</td><td><span class="status-pill pill-blue">A</span></td></tr>
+                <tr><td>Communication Skills</td><td>EN101</td><td>44/50</td><td>70/100</td><td>114/150</td><td><span class="status-pill pill-blue">A+</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="sem2" class="sem-marks" style="display:none">
+            <table class="data-table">
+              <thead><tr><th>Subject</th><th>Code</th><th>Internal</th><th>External</th><th>Total</th><th>Grade</th></tr></thead>
+              <tbody>
+                <tr><td>Engineering Mathematics II</td><td>MA201</td><td>46/50</td><td>74/100</td><td>120/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Data Structures</td><td>CS201</td><td>47/50</td><td>76/100</td><td>123/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Digital Electronics</td><td>EC201</td><td>41/50</td><td>66/100</td><td>107/150</td><td><span class="status-pill pill-blue">A+</span></td></tr>
+                <tr><td>OOP with Java</td><td>CS202</td><td>49/50</td><td>80/100</td><td>129/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Statistics & Probability</td><td>MA202</td><td>43/50</td><td>69/100</td><td>112/150</td><td><span class="status-pill pill-blue">A+</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="sem3" class="sem-marks" style="display:none">
+            <table class="data-table">
+              <thead><tr><th>Subject</th><th>Code</th><th>Internal</th><th>External</th><th>Total</th><th>Grade</th></tr></thead>
+              <tbody>
+                <tr><td>Discrete Mathematics</td><td>MA301</td><td>45/50</td><td>75/100</td><td>120/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Database Management Systems</td><td>CS301</td><td>47/50</td><td>78/100</td><td>125/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Computer Organization</td><td>CS302</td><td>43/50</td><td>70/100</td><td>113/150</td><td><span class="status-pill pill-blue">A+</span></td></tr>
+                <tr><td>Operating Systems</td><td>CS303</td><td>44/50</td><td>72/100</td><td>116/150</td><td><span class="status-pill pill-blue">A+</span></td></tr>
+                <tr><td>Environmental Science</td><td>GE301</td><td>46/50</td><td>73/100</td><td>119/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="sem4" class="sem-marks" style="display:none">
+            <table class="data-table">
+              <thead><tr><th>Subject</th><th>Code</th><th>Internal</th><th>External</th><th>Total</th><th>Grade</th></tr></thead>
+              <tbody>
+                <tr><td>Design and Analysis of Algorithms</td><td>CS401</td><td>46/50</td><td>76/100</td><td>122/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Computer Networks</td><td>CS402</td><td>44/50</td><td>71/100</td><td>115/150</td><td><span class="status-pill pill-blue">A+</span></td></tr>
+                <tr><td>Software Engineering</td><td>CS403</td><td>45/50</td><td>72/100</td><td>117/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Microprocessors</td><td>EC401</td><td>42/50</td><td>68/100</td><td>110/150</td><td><span class="status-pill pill-blue">A+</span></td></tr>
+                <tr><td>Professional Ethics</td><td>HS401</td><td>47/50</td><td>74/100</td><td>121/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="sem5" class="sem-marks" style="display:none">
+            <table class="data-table">
+              <thead><tr><th>Subject</th><th>Code</th><th>Internal</th><th>External</th><th>Total</th><th>Grade</th></tr></thead>
+              <tbody>
+                <tr><td>Theory of Computation</td><td>CS501</td><td>45/50</td><td>73/100</td><td>118/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Web Technologies</td><td>CS502</td><td>49/50</td><td>81/100</td><td>130/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Artificial Intelligence</td><td>CS503</td><td>46/50</td><td>77/100</td><td>123/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Compiler Design</td><td>CS504</td><td>42/50</td><td>69/100</td><td>111/150</td><td><span class="status-pill pill-blue">A+</span></td></tr>
+                <tr><td>Data Analytics</td><td>CS505</td><td>48/50</td><td>79/100</td><td>127/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="sem6" class="sem-marks" style="display:none">
+            <table class="data-table">
+              <thead><tr><th>Subject</th><th>Code</th><th>Internal</th><th>External</th><th>Total</th><th>Grade</th></tr></thead>
+              <tbody>
+                <tr><td>Machine Learning</td><td>CS601</td><td>47/50</td><td>78/100</td><td>125/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Cloud Computing</td><td>CS602</td><td>44/50</td><td>71/100</td><td>115/150</td><td><span class="status-pill pill-blue">A+</span></td></tr>
+                <tr><td>Information Security</td><td>CS603</td><td>45/50</td><td>74/100</td><td>119/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+                <tr><td>Mobile Application Development</td><td>CS604</td><td>43/50</td><td>70/100</td><td>113/150</td><td><span class="status-pill pill-blue">A+</span></td></tr>
+                <tr><td>Mini Project</td><td>CS605</td><td>49/50</td><td>82/100</td><td>131/150</td><td><span class="status-pill pill-green">O</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SKILLS & CERTIFICATIONS -->
+      <div class="page" id="sSkills">
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="section-header">
+              <div><div class="chart-title">Technical Skills</div><div class="chart-sub">Add and manage your skills</div></div>
+            </div>
+            <div class="skills-wrap" id="skillsContainer">
+              <span class="skill-tag">Java <span class="remove" onclick="removeSkill(this)">×</span></span>
+              <span class="skill-tag">Python <span class="remove" onclick="removeSkill(this)">×</span></span>
+              <span class="skill-tag">SQL <span class="remove" onclick="removeSkill(this)">×</span></span>
+              <span class="skill-tag">Web Development <span class="remove" onclick="removeSkill(this)">×</span></span>
+              <span class="skill-tag">Machine Learning <span class="remove" onclick="removeSkill(this)">×</span></span>
+              <span class="skill-tag">React.js <span class="remove" onclick="removeSkill(this)">×</span></span>
+              <span class="skill-tag">Data Analysis <span class="remove" onclick="removeSkill(this)">×</span></span>
+            </div>
+            <div class="add-skill-row">
+              <input type="text" id="newSkillInput" placeholder="Add a skill (e.g. Docker, Kubernetes...)">
+              <button class="btn-save" onclick="addSkill()">+ Add</button>
+            </div>
+            <div style="margin-top:20px">
+              <div class="chart-sub" style="margin-bottom:10px">Skill Proficiency</div>
+              <div style="font-size:13px;color:var(--text2);margin-bottom:6px">Java <span style="float:right;font-weight:600;color:var(--text)">90%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
+              <div style="font-size:13px;color:var(--text2);margin:10px 0 6px">Python <span style="float:right;font-weight:600;color:var(--text)">85%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div>
+              <div style="font-size:13px;color:var(--text2);margin:10px 0 6px">Machine Learning <span style="float:right;font-weight:600;color:var(--text)">70%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div>
+              <div style="font-size:13px;color:var(--text2);margin:10px 0 6px">Web Development <span style="float:right;font-weight:600;color:var(--text)">80%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Certificate Upload</div>
+            <div class="chart-sub">Upload and manage certifications</div>
+            <div class="cert-upload" onclick="openCertificatePicker()" ondragover="handleCertDragOver(event)" ondragleave="handleCertDragLeave(event)" ondrop="handleCertDrop(event)">
+              <div class="cert-upload-icon">📤</div>
+              <p>Drag & drop or <span>browse files</span></p>
+              <p style="margin-top:6px;font-size:11px">PDF, JPG, PNG supported · Max 5MB</p>
+            </div>
+            <input type="file" id="certFileInput" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleCertificateUpload(event)">
+            <div class="cert-list" id="certList">
+              <div class="cert-item">
+                <div class="cert-icon">🏆</div>
+                <div class="cert-name">AWS Cloud Practitioner</div>
+                <div class="cert-date">Mar 2024</div>
+                <div class="cert-badge">Verified</div>
+              </div>
+              <div class="cert-item">
+                <div class="cert-icon">📜</div>
+                <div class="cert-name">Python for Data Science</div>
+                <div class="cert-date">Jan 2024</div>
+                <div class="cert-badge">Verified</div>
+              </div>
+              <div class="cert-item">
+                <div class="cert-icon">🎯</div>
+                <div class="cert-name">Google Analytics</div>
+                <div class="cert-date">Dec 2023</div>
+                <div class="cert-badge">Verified</div>
+              </div>
+              <div class="cert-item">
+                <div class="cert-icon">🔐</div>
+                <div class="cert-name">Cybersecurity Basics</div>
+                <div class="cert-date">Nov 2023</div>
+                <div class="cert-badge">Verified</div>
+              </div>
+              <div class="cert-item">
+                <div class="cert-icon">🤖</div>
+                <div class="cert-name">ML Foundations</div>
+                <div class="cert-date">Oct 2023</div>
+                <div class="cert-badge">Verified</div>
+              </div>
+              <div class="cert-item" id="addCertCard" style="border:2px dashed var(--border);background:transparent;cursor:pointer" onclick="openCertificatePicker()">
+                <div class="cert-icon">➕</div>
+                <div class="cert-name" style="color:var(--text2)">Add Certificate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTERNSHIPS -->
+      <div class="page" id="sIntern">
+        <div class="section-header">
+          <div><div class="section-title">Internship History</div><div class="section-sub">Your internship portfolio</div></div>
+          <button class="btn-save" onclick="toggleInternshipForm()">+ Add Internship</button>
+        </div>
+        <div class="form-card" id="internshipForm" style="display:none">
+          <div class="section-header" style="margin-bottom:14px">
+            <div><div class="section-title">Add Internship Details</div><div class="section-sub">Enter your company, role, duration, stipend, and certificate details</div></div>
+          </div>
+          <form onsubmit="saveInternship(event)">
+            <div class="form-row">
+              <div class="field"><label>Company Name</label><input type="text" id="internCompany" placeholder="e.g. Zoho Corporation" required></div>
+              <div class="field"><label>Internship Role</label><input type="text" id="internRole" placeholder="e.g. Web Developer Intern" required></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Start Date</label><input type="date" id="internStart" required></div>
+              <div class="field"><label>End Date</label><input type="date" id="internEnd" required></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Duration</label><input type="text" id="internDuration" placeholder="e.g. 8 Weeks" required></div>
+              <div class="field"><label>Stipend</label><input type="text" id="internStipend" placeholder="e.g. ₹15,000/month"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Location</label><input type="text" id="internLocation" placeholder="e.g. Chennai / Remote" required></div>
+              <div class="field"><label>Status</label><select id="internStatus"><option>Completed</option><option>Ongoing</option><option>Upcoming</option></select></div>
+            </div>
+            <div class="form-row single">
+              <div class="field"><label>Certificate / Offer Letter</label><input type="file" id="internCertificate" accept=".pdf,.jpg,.jpeg,.png"></div>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+              <button type="button" class="btn-outline" onclick="toggleInternshipForm(false)">Cancel</button>
+              <button type="submit" class="btn-save">Save Internship</button>
+            </div>
+          </form>
+        </div>
+        <div class="intern-card">
+          <div class="intern-header">
+            <div><div class="intern-co">Infosys Limited</div><div class="intern-role">Software Engineering Intern</div></div>
+            <span class="status-pill pill-green">✅ Completed</span>
+          </div>
+          <div class="intern-meta">
+            <div class="intern-meta-item">📅 <span>June 2023 – Aug 2023</span></div>
+            <div class="intern-meta-item">⏱ <span>8 Weeks</span></div>
+            <div class="intern-meta-item">📍 <span>Bangalore, India</span></div>
+          </div>
+        </div>
+        <div class="intern-card">
+          <div class="intern-header">
+            <div><div class="intern-co">TCS iON</div><div class="intern-role">Data Analytics Intern</div></div>
+            <span class="status-pill pill-green">✅ Completed</span>
+          </div>
+          <div class="intern-meta">
+            <div class="intern-meta-item">📅 <span>Dec 2022 – Jan 2023</span></div>
+            <div class="intern-meta-item">⏱ <span>6 Weeks</span></div>
+            <div class="intern-meta-item">📍 <span>Remote</span></div>
+          </div>
+        </div>
+        <div class="chart-card" id="internshipOpportunities" style="margin-top:20px">
+          <div class="chart-title" style="margin-bottom:12px">🔔 Internship Opportunities</div>
+          <div class="chart-sub" style="margin-bottom:16px">Posted by Placement Officers</div>
+          <div class="intern-card" style="box-shadow:none;border-color:rgba(108,63,197,.2);background:rgba(108,63,197,.02)">
+            <div class="intern-header">
+              <div><div class="intern-co">Microsoft</div><div class="intern-role">Software Dev Intern — Summer 2024</div></div>
+              <button class="btn-save" style="padding:8px 16px;font-size:12px" onclick="alert('Application submitted!')">Apply Now</button>
+            </div>
+            <div class="intern-meta">
+              <div class="intern-meta-item">⏱ <span>12 Weeks</span></div>
+              <div class="intern-meta-item">💰 <span>₹50,000/month</span></div>
+              <div class="intern-meta-item">📌 <span>Min CGPA: 7.5</span></div>
+            </div>
+          </div>
+          <div class="intern-card" style="box-shadow:none;border-color:rgba(16,185,129,.2);background:rgba(16,185,129,.02)">
+            <div class="intern-header">
+              <div><div class="intern-co">Wipro</div><div class="intern-role">ML Research Intern — Q3 2024</div></div>
+              <button class="btn-save" style="padding:8px 16px;font-size:12px" onclick="alert('Application submitted!')">Apply Now</button>
+            </div>
+            <div class="intern-meta">
+              <div class="intern-meta-item">⏱ <span>8 Weeks</span></div>
+              <div class="intern-meta-item">💰 <span>₹35,000/month</span></div>
+              <div class="intern-meta-item">📌 <span>Min CGPA: 8.0</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLACEMENT STATUS -->
+      <div class="page" id="sPlacement">
+        <div class="placement-banner">
+          <div>
+            <h2>🎉 Congratulations! You're Placed!</h2>
+            <p>Your hard work paid off. Here's your placement summary.</p>
+            <div class="placement-detail-grid">
+              <div class="pd-item"><div class="pd-label">Company</div><div class="pd-val" style="font-size:18px">TCS</div></div>
+              <div class="pd-item"><div class="pd-label">Salary Package</div><div class="pd-val">₹6.0 LPA</div></div>
+              <div class="pd-item"><div class="pd-label">CTC</div><div class="pd-val">₹6.0 LPA</div></div>
+            </div>
+          </div>
+          <div style="font-size:80px">🏆</div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Placement Timeline</div>
+            <div class="chart-sub">Key milestones in your placement journey</div>
+            <div style="margin-top:12px">
+              <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px">
+                <div style="width:32px;height:32px;border-radius:50%;background:rgba(16,185,129,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">✅</div>
+                <div><div style="font-size:13px;font-weight:700">Resume Shortlisted</div><div style="font-size:11px;color:var(--text2)">Feb 15, 2024</div></div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px">
+                <div style="width:32px;height:32px;border-radius:50%;background:rgba(16,185,129,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">✅</div>
+                <div><div style="font-size:13px;font-weight:700">Written Test Cleared</div><div style="font-size:11px;color:var(--text2)">Feb 20, 2024</div></div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px">
+                <div style="width:32px;height:32px;border-radius:50%;background:rgba(16,185,129,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">✅</div>
+                <div><div style="font-size:13px;font-weight:700">Technical Interview</div><div style="font-size:11px;color:var(--text2)">Feb 28, 2024</div></div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <div style="width:32px;height:32px;border-radius:50%;background:rgba(16,185,129,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">🎉</div>
+                <div><div style="font-size:13px;font-weight:700;color:var(--green)">Offer Letter Received</div><div style="font-size:11px;color:var(--text2)">Mar 5, 2024</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Batch Placement Overview</div>
+            <div class="chart-sub">How your batch is performing</div>
+            <div style="position:relative;height:200px"><canvas id="batchPlace" role="img" aria-label="Pie chart of batch placement stats">Placement status distribution.</canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECOMMENDATIONS -->
+      <div class="page" id="sRec">
+        <div class="section-header">
+          <div><div class="section-title">Profile-Based Recommendations</div><div class="section-sub">Generated from your CGPA, skills, certifications, internships, alumni patterns, and company criteria</div></div>
+          <button class="btn-save" style="padding:10px 18px;font-size:12px" onclick="renderRecommendations()">Refresh Analysis</button>
+        </div>
+        <div class="info-banner" id="recSummary" style="align-items:flex-start"></div>
+        <div class="chart-grid">
+          <div id="recLeft"></div>
+          <div id="recRight"></div>
+        </div>
+        <div class="chart-grid" style="display:none">
+          <div>
+            <div class="rec-card">
+              <div class="rec-icon">🚀</div>
+              <h4>Recommended Skills to Learn</h4>
+              <p>Based on top companies visiting your college, upskill in: <b>Cloud Computing (AWS/GCP)</b>, <b>System Design</b>, and <b>DSA (LeetCode 150+)</b>.</p>
+              <div class="skills-wrap" style="margin-top:12px;margin-bottom:0">
+                <span class="skill-tag">AWS Cloud</span><span class="skill-tag">System Design</span><span class="skill-tag">DSA</span><span class="skill-tag">Kubernetes</span><span class="skill-tag">Docker</span>
+              </div>
+            </div>
+            <div class="rec-card">
+              <div class="rec-icon">📜</div>
+              <h4>Recommended Certifications</h4>
+              <p>Alumni who joined top MNCs had these certifications on average.</p>
+              <div class="skills-wrap" style="margin-top:12px;margin-bottom:0">
+                <span class="skill-tag">AWS SAA</span><span class="skill-tag">Google Cloud ACE</span><span class="skill-tag">Oracle Java SE</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="rec-card">
+              <div class="rec-icon">🎯</div>
+              <h4>Placement Preparation Roadmap</h4>
+              <p>4-step action plan recommended by placement officers:</p>
+              <div style="margin-top:10px">
+                <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.05)"><span style="background:var(--grad);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span><span style="font-size:13px">Complete DSA on LeetCode (minimum 100 problems)</span></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.05)"><span style="background:var(--grad);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span><span style="font-size:13px">Build 2 full-stack projects for your portfolio</span></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.05)"><span style="background:var(--grad);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</span><span style="font-size:13px">Get AWS Cloud Practitioner certification</span></div>
+                <div style="display:flex;align-items:center;gap:8px;padding:8px 0"><span style="background:var(--grad);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">4</span><span style="font-size:13px">Mock interviews — minimum 20 sessions</span></div>
+              </div>
+            </div>
+            <div class="rec-card">
+              <div class="rec-icon">📊</div>
+              <h4>Alumni-Based Insight</h4>
+              <p>78% of CS alumni from your college joined product companies. Top skills they had: <b>DSA, System Design, SQL, Python</b>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEADLINES -->
+      <div class="page" id="sDeadlines">
+        <div class="section-header">
+          <div><div class="section-title">Assessment Deadlines</div><div class="section-sub">Upcoming and active deadlines</div></div>
+        </div>
+        <div class="deadline-card">
+          <div class="deadline-icon dl-red">📋</div>
+          <div class="deadline-info"><h4>Design Thinking Assignment</h4><p>Subject: Innovation & Entrepreneurship · 3rd Year</p></div>
+          <div style="text-align:right"><div style="font-size:12px;color:var(--text2);margin-bottom:4px">Due: Mar 15, 2024</div><div class="days-chip days-urgent">2 days left</div></div>
+        </div>
+        <div class="deadline-card">
+          <div class="deadline-icon dl-amber">📝</div>
+          <div class="deadline-info"><h4>Operating Systems Lab Record</h4><p>Subject: OS Lab · 3rd Year</p></div>
+          <div style="text-align:right"><div style="font-size:12px;color:var(--text2);margin-bottom:4px">Due: Mar 20, 2024</div><div class="days-chip days-soon">7 days left</div></div>
+        </div>
+        <div class="deadline-card">
+          <div class="deadline-icon dl-green">🔬</div>
+          <div class="deadline-info"><h4>Mini Project Report Submission</h4><p>Subject: Project Work · 3rd Year</p></div>
+          <div style="text-align:right"><div style="font-size:12px;color:var(--text2);margin-bottom:4px">Due: Apr 5, 2024</div><div class="days-chip days-ok">23 days left</div></div>
+        </div>
+        <div class="deadline-card">
+          <div class="deadline-icon dl-green">🧪</div>
+          <div class="deadline-info"><h4>Compiler Design Quiz</h4><p>Subject: CD · 3rd Year</p></div>
+          <div style="text-align:right"><div style="font-size:12px;color:var(--text2);margin-bottom:4px">Due: Apr 12, 2024</div><div class="days-chip days-ok">30 days left</div></div>
+        </div>
+        <div class="chart-card" style="margin-top:20px;background:rgba(108,63,197,.03);border-color:rgba(108,63,197,.2)">
+          <div style="display:flex;gap:10px;align-items:center"><span style="font-size:20px">📧</span><div><div style="font-size:14px;font-weight:700;color:var(--text)">Email Notifications Active</div><div style="font-size:12px;color:var(--text2)">You receive real-time SMTP email alerts at bdgk2027@gmail.com</div></div></div>
+        </div>
+      </div>
+
+      <!-- COMPANY ELIGIBILITY -->
+      <div class="page" id="sEligibility">
+        <div class="section-header">
+          <div><div class="section-title">Company Eligibility Check</div><div class="section-sub">Dynamic eligibility based on your profile</div></div>
+        </div>
+        <div class="company-card">
+          <div class="company-header">
+            <div><div class="company-name">🏢 TCS — Tata Consultancy Services</div><div class="company-role">Software Engineer · Package: ₹6–7 LPA</div></div>
+            <div class="eligibility-indicator elig-yes">✅ Eligible</div>
+          </div>
+          <div class="criteria-row">
+            <div class="crit-item crit-met">Min CGPA: <span class="crit-val">7.0</span> &nbsp;✓ Your: 8.5</div>
+            <div class="crit-item crit-met">Dept: <span class="crit-val">CS/IT/ECE</span> &nbsp;✓</div>
+            <div class="crit-item crit-met">Skills: <span class="crit-val">Java / Python</span> &nbsp;✓</div>
+            <div class="crit-item crit-met">Min Internships: <span class="crit-val">0</span> &nbsp;✓ You: 2</div>
+          </div>
+        </div>
+        <div class="company-card">
+          <div class="company-header">
+            <div><div class="company-name">🔵 Infosys</div><div class="company-role">Systems Engineer · Package: ₹5–6 LPA</div></div>
+            <div class="eligibility-indicator elig-yes">✅ Eligible</div>
+          </div>
+          <div class="criteria-row">
+            <div class="crit-item crit-met">Min CGPA: <span class="crit-val">6.5</span> &nbsp;✓ Your: 8.5</div>
+            <div class="crit-item crit-met">Dept: <span class="crit-val">Any</span> &nbsp;✓</div>
+            <div class="crit-item crit-met">Skills: <span class="crit-val">Any programming</span> &nbsp;✓</div>
+            <div class="crit-item crit-met">Backlogs: <span class="crit-val">0</span> &nbsp;✓</div>
+          </div>
+        </div>
+        <div class="company-card">
+          <div class="company-header">
+            <div><div class="company-name">🟠 Wipro</div><div class="company-role">Project Engineer · Package: ₹5.5 LPA</div></div>
+            <div class="eligibility-indicator elig-yes">✅ Eligible</div>
+          </div>
+          <div class="criteria-row">
+            <div class="crit-item crit-met">Min CGPA: <span class="crit-val">6.0</span> &nbsp;✓</div>
+            <div class="crit-item crit-met">Dept: <span class="crit-val">CS/IT</span> &nbsp;✓</div>
+            <div class="crit-item crit-met">Min Internships: <span class="crit-val">0</span> &nbsp;✓</div>
+          </div>
+        </div>
+        <div class="company-card">
+          <div class="company-header">
+            <div><div class="company-name">🔴 Google</div><div class="company-role">SWE · Package: ₹25+ LPA</div></div>
+            <div class="eligibility-indicator elig-no">❌ Not Eligible</div>
+          </div>
+          <div class="criteria-row">
+            <div class="crit-item crit-met">Min CGPA: <span class="crit-val">9.0</span></div>
+            <div class="crit-item crit-fail" style="color:#991b1b">Your CGPA: <span class="crit-val">8.5 ❌</span></div>
+            <div class="crit-item crit-fail">Min Internships: <span class="crit-val">3 required ❌</span></div>
+            <div class="crit-item crit-fail">LeetCode: <span class="crit-val">300+ problems ❌</span></div>
+          </div>
+        </div>
+        <div class="company-card">
+          <div class="company-header">
+            <div><div class="company-name">🟣 Zoho Corporation</div><div class="company-role">Member Technical Staff · Package: ₹7–12 LPA</div></div>
+            <div class="eligibility-indicator elig-yes">✅ Eligible</div>
+          </div>
+          <div class="criteria-row">
+            <div class="crit-item crit-met">Min CGPA: <span class="crit-val">7.5</span> &nbsp;✓</div>
+            <div class="crit-item crit-met">Dept: <span class="crit-val">CS/IT</span> &nbsp;✓</div>
+            <div class="crit-item crit-met">Skills: <span class="crit-val">Java / SQL</span> &nbsp;✓</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALUMNI INSIGHTS -->
+      <div class="page" id="sAlumni">
+        <div class="section-header">
+          <div><div class="section-title">Alumni Career Insight Module</div><div class="section-sub">Powered by alumni database · Updated Q1 2024</div></div>
+        </div>
+        <div class="chart-card" id="alumniDeadlinePanel" style="margin-bottom:20px">
+          <div class="section-header" style="margin-bottom:10px">
+            <div><div class="chart-title">Alumni Deadlines</div><div class="chart-sub">Announcements and submission dates for alumni activities</div></div>
+          </div>
+          <div id="alumniDeadlineList">
+            <div id="alumniDeadlineEmpty" style="font-size:13px;color:var(--text2)">No alumni deadlines yet.</div>
+          </div>
+        </div>
+        <div class="alumni-sub">
+          <div class="alumni-sub-nav">
+            <div class="alumni-sub-item active" onclick="setAlumniTab(this,'aProfiles')">👤 Alumni Profiles</div>
+            <div class="alumni-sub-item" onclick="setAlumniTab(this,'aSkills')">⚡ Skill Trends</div>
+            <div class="alumni-sub-item" onclick="setAlumniTab(this,'aRoles')">💼 Role Analysis</div>
+            <div class="alumni-sub-item" onclick="setAlumniTab(this,'aRec')">💡 Recommendations</div>
+          </div>
+          <div class="alumni-sub-content">
+            <div id="aProfiles">
+              <div class="alumni-card">
+                <div class="alumni-av">SR</div>
+                <div class="alumni-info">
+                  <h4>Sneha Rao · Batch of 2022</h4>
+                  <p>Software Engineer at Google · Hyderabad &nbsp;|&nbsp; CGPA: 9.1</p>
+                  <div class="alumni-tags"><span class="alumni-tag">DSA</span><span class="alumni-tag">System Design</span><span class="alumni-tag">Go Lang</span><span class="alumni-tag">Cloud</span></div>
+                </div>
+              </div>
+              <div class="alumni-card">
+                <div class="alumni-av v2">MK</div>
+                <div class="alumni-info">
+                  <h4>Mohan Kumar · Batch of 2022</h4>
+                  <p>Data Scientist at Flipkart · Bangalore &nbsp;|&nbsp; CGPA: 8.8</p>
+                  <div class="alumni-tags"><span class="alumni-tag">Python</span><span class="alumni-tag">ML</span><span class="alumni-tag">SQL</span><span class="alumni-tag">Tableau</span></div>
+                </div>
+              </div>
+              <div class="alumni-card">
+                <div class="alumni-av v3">PL</div>
+                <div class="alumni-info">
+                  <h4>Priya Lakshmi · Batch of 2023</h4>
+                  <p>Full Stack Dev at Zoho · Chennai &nbsp;|&nbsp; CGPA: 8.5</p>
+                  <div class="alumni-tags"><span class="alumni-tag">React</span><span class="alumni-tag">Node.js</span><span class="alumni-tag">MongoDB</span><span class="alumni-tag">AWS</span></div>
+                </div>
+              </div>
+            </div>
+            <div id="aSkills" style="display:none">
+              <div class="chart-card">
+                <div class="chart-title">Most Demanded Skills by Top Companies</div>
+                <div style="position:relative;height:280px;margin-top:12px"><canvas id="alumniSkillChart" role="img" aria-label="Horizontal bar chart showing most demanded skills">Skill demand chart.</canvas></div>
+              </div>
+            </div>
+            <div id="aRoles" style="display:none">
+              <div class="chart-card">
+                <div class="chart-title">Alumni Role Distribution</div>
+                <div style="position:relative;height:260px;margin-top:12px"><canvas id="roleChart" role="img" aria-label="Donut chart of alumni roles">Role distribution chart.</canvas></div>
+              </div>
+            </div>
+            <div id="aRec" style="display:none">
+              <div class="rec-card"><div class="rec-icon">🔥</div><h4>Trending Technologies in 2024</h4><p>Based on hiring data: GenAI, Cloud-Native, DevOps, and Microservices are leading the demand from product companies.</p></div>
+              <div class="rec-card"><div class="rec-icon">🎯</div><h4>Role to Target</h4><p>With your CGPA of 8.5 and Python/ML skills, alumni data suggests targeting <b>Data Engineer</b> or <b>Full Stack Developer</b> roles for maximum salary range (₹8–15 LPA).</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end content -->
+  </div><!-- end main -->
+</div><!-- end studentApp -->
+
+<!-- FACULTY APP -->
+<div class="app" id="facultyApp">
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-text">🎓 EduAnalytics</div><div class="logo-sub">Faculty Portal</div></div>
+    <div class="nav-section">Menu</div>
+    <div class="nav-item active" onclick="showPage('faculty','fDash',this)"><span class="nav-icon">📊</span>Dashboard</div>
+    <div class="nav-item" onclick="showPage('faculty','fDeadlines',this)"><span class="nav-icon">📅</span>Assessment Deadlines</div>
+    <div class="nav-item" onclick="showPage('faculty','fDeptPerf',this)"><span class="nav-icon">📚</span>Department Performance</div>
+    <div class="nav-item" onclick="showPage('faculty','fInternship',this)"><span class="nav-icon">💼</span>Internship Analytics</div>
+    <div class="nav-item" onclick="showPage('faculty','fPlacement',this)"><span class="nav-icon">🏆</span>Placement Success</div>
+    <div class="nav-item" onclick="showPage('faculty','fYearwise',this)"><span class="nav-icon">📈</span>Year-wise Comparison</div>
+    <div class="nav-item" onclick="showPage('faculty','fAlumni',this)"><span class="nav-icon">🌐</span>Alumni Analytics</div>
+    <div class="sidebar-bottom">
+      <div class="profile-mini"><div class="avatar">DR</div><div><div class="pname">Dr. Ramesh S.</div><div class="prole">Faculty · CSE Dept</div></div></div>
+      <div class="logout-btn" onclick="logout()">🚪 Logout</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="topbar"><div><h2 id="fTopTitle">Faculty Dashboard</h2><div class="breadcrumb" id="fTopBread">Home / Dashboard</div></div><div class="topbar-actions"><div class="notif-btn">🔔</div><div class="notif-btn">⚙️</div></div></div>
+    <div class="content">
+
+      <!-- FACULTY DASHBOARD -->
+      <div class="page active" id="fDash">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Avg CGPA</div><div class="kpi-value">7.82</div><div class="kpi-sub">Batch 2021–25</div><div class="kpi-icon kpi-purple">📈</div></div>
+          <div class="kpi-card"><div class="kpi-label">Total Students</div><div class="kpi-value">248</div><div class="kpi-sub">CS Department</div><div class="kpi-icon kpi-blue">👥</div></div>
+          <div class="kpi-card"><div class="kpi-label">Internships</div><div class="kpi-value">186</div><div class="kpi-sub">75% completion rate</div><div class="kpi-icon kpi-amber">💼</div></div>
+          <div class="kpi-card"><div class="kpi-label">Placement Rate</div><div class="kpi-value">89%</div><div class="kpi-sub">Of eligible students</div><div class="kpi-icon kpi-green">🏆</div></div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Department-wise CGPA</div>
+            <div class="chart-sub">Average CGPA across departments</div>
+            <div style="position:relative;height:220px"><canvas id="deptCGPA" role="img" aria-label="Bar chart of department CGPA averages">Dept CGPA chart.</canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Placement Status Distribution</div>
+            <div class="chart-sub">Current batch overview</div>
+            <div style="position:relative;height:220px"><canvas id="placeStatus" role="img" aria-label="Doughnut chart of placement status">Placement pie chart.</canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASSESSMENT DEADLINES -->
+      <div class="page" id="fDeadlines">
+        <div class="form-card">
+          <div class="chart-title" style="margin-bottom:16px">Create Assessment Deadline</div>
+          <div class="form-row">
+            <div class="field"><label>Assessment Title</label><input type="text" id="deadlineTitle" placeholder="e.g. Design Thinking Assignment"></div>
+            <div class="field"><label>Deadline Date</label><input type="date" id="deadlineDate"></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Target Year</label><select id="deadlineTarget"><option>1st Year</option><option>2nd Year</option><option selected>3rd Year</option><option>4th Year</option></select></div>
+            <div class="field"><label>Subject / Course</label><input type="text" id="deadlineSubject" placeholder="e.g. Innovation & Entrepreneurship"></div>
+          </div>
+          <div class="form-row single">
+            <div class="field"><label>Audience</label><select id="deadlineAudience"><option>Students</option><option>Faculty</option><option>Alumni</option></select></div>
+          </div>
+          <div class="form-row single">
+            <div class="field"><label>Description</label><textarea id="deadlineDescription" placeholder="Assignment details, instructions, submission format..."></textarea></div>
+          </div>
+          <button class="btn-save" onclick="createAssessmentDeadline()">📧 Create Deadline & Send Notifications</button>
+        </div>
+        <div class="chart-card">
+          <div class="section-header"><div class="chart-title">Assessment Deadlines</div></div>
+          <table class="data-table">
+            <thead><tr><th>Title</th><th>Target Year</th><th>Deadline Date</th><th>Days Remaining</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>Design Thinking Assignment</td><td>3rd Year</td><td>Mar 15, 2024</td><td><span class="days-chip days-urgent">2 days</span></td><td><span class="status-pill pill-red">Urgent</span></td><td><button class="btn-sm btn-edit">Edit</button> <button class="btn-sm btn-del">Delete</button></td></tr>
+              <tr><td>OS Lab Record</td><td>3rd Year</td><td>Mar 20, 2024</td><td><span class="days-chip days-soon">7 days</span></td><td><span class="status-pill pill-amber">Active</span></td><td><button class="btn-sm btn-edit">Edit</button> <button class="btn-sm btn-del">Delete</button></td></tr>
+              <tr><td>Mini Project Report</td><td>3rd Year</td><td>Apr 5, 2024</td><td><span class="days-chip days-ok">23 days</span></td><td><span class="status-pill pill-green">Upcoming</span></td><td><button class="btn-sm btn-edit">Edit</button> <button class="btn-sm btn-del">Delete</button></td></tr>
+              <tr><td>Compiler Design Quiz</td><td>3rd Year</td><td>Apr 12, 2024</td><td><span class="days-chip days-ok">30 days</span></td><td><span class="status-pill pill-green">Upcoming</span></td><td><button class="btn-sm btn-edit">Edit</button> <button class="btn-sm btn-del">Delete</button></td></tr>
+              <tr><td>DBMS Case Study</td><td>2nd Year</td><td>Mar 18, 2024</td><td><span class="days-chip days-soon">5 days</span></td><td><span class="status-pill pill-amber">Active</span></td><td><button class="btn-sm btn-edit">Edit</button> <button class="btn-sm btn-del">Delete</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DEPT PERFORMANCE -->
+      <div class="page" id="fDeptPerf">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Dept Avg CGPA</div><div class="kpi-value">7.82</div><div class="kpi-icon kpi-purple">📈</div></div>
+          <div class="kpi-card"><div class="kpi-label">Top Performer</div><div class="kpi-value" style="font-size:16px;margin-top:4px">Sneha R.</div><div class="kpi-sub">CGPA: 9.6</div><div class="kpi-icon kpi-green">🥇</div></div>
+          <div class="kpi-card"><div class="kpi-label">Total Students</div><div class="kpi-value">248</div><div class="kpi-icon kpi-blue">👥</div></div>
+          <div class="kpi-card"><div class="kpi-label">Pass Rate</div><div class="kpi-value">96.8%</div><div class="kpi-icon kpi-amber">✅</div></div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Year-wise Performance</div>
+            <div class="chart-sub">Average CGPA by year of study</div>
+            <div style="position:relative;height:220px"><canvas id="yearPerf" role="img" aria-label="Bar chart year-wise performance">Year CGPA chart.</canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Top Performers — Batch 2021–25</div>
+            <div class="chart-sub">Best students by CGPA</div>
+            <table class="data-table" style="margin-top:8px">
+              <thead><tr><th>Rank</th><th>Name</th><th>Reg No</th><th>CGPA</th></tr></thead>
+              <tbody>
+                <tr><td>🥇 1</td><td>Sneha R.</td><td>21CS001</td><td><b>9.60</b></td></tr>
+                <tr><td>🥈 2</td><td>Karthik M.</td><td>21CS014</td><td><b>9.40</b></td></tr>
+                <tr><td>🥉 3</td><td>Divya P.</td><td>21CS023</td><td><b>9.20</b></td></tr>
+                <tr><td>4</td><td>Arjun K.</td><td>21CS042</td><td><b>8.50</b></td></tr>
+                <tr><td>5</td><td>Priya L.</td><td>21CS058</td><td><b>8.40</b></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTERNSHIP ANALYTICS -->
+      <div class="page" id="fInternship">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">With Internships</div><div class="kpi-value">186</div><div class="kpi-sub">75% of 248</div><div class="kpi-icon kpi-green">💼</div></div>
+          <div class="kpi-card"><div class="kpi-label">Without Internships</div><div class="kpi-value">62</div><div class="kpi-sub">25% of 248</div><div class="kpi-icon kpi-red" style="background:rgba(239,68,68,.1);color:var(--red)">⚠️</div></div>
+          <div class="kpi-card"><div class="kpi-label">Avg Duration</div><div class="kpi-value">7.4</div><div class="kpi-sub">Weeks per internship</div><div class="kpi-icon kpi-amber">⏱</div></div>
+          <div class="kpi-card"><div class="kpi-label">Top Company</div><div class="kpi-value" style="font-size:16px;margin-top:4px">Infosys</div><div class="kpi-sub">48 students</div><div class="kpi-icon kpi-purple">🏢</div></div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Internship Companies</div>
+            <div style="position:relative;height:240px"><canvas id="internChart" role="img" aria-label="Horizontal bar chart of top internship companies">Internship company chart.</canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Internship Status Breakdown</div>
+            <div style="position:relative;height:240px"><canvas id="internPie" role="img" aria-label="Pie chart of internship status">Internship status pie.</canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLACEMENT SUCCESS -->
+      <div class="page" id="fPlacement">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Students Placed</div><div class="kpi-value">221</div><div class="kpi-sub">Out of 248</div><div class="kpi-icon kpi-green">🏆</div></div>
+          <div class="kpi-card"><div class="kpi-label">Unwilling</div><div class="kpi-value">12</div><div class="kpi-sub">Opted out</div><div class="kpi-icon kpi-amber">🚫</div></div>
+          <div class="kpi-card"><div class="kpi-label">Highest Package</div><div class="kpi-value">₹25L</div><div class="kpi-sub">Sneha R. — Google</div><div class="kpi-icon kpi-purple">💰</div></div>
+          <div class="kpi-card"><div class="kpi-label">Avg Package</div><div class="kpi-value">₹7.2L</div><div class="kpi-sub">Per annum CTC</div><div class="kpi-icon kpi-blue">📊</div></div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Package Distribution</div>
+            <div style="position:relative;height:240px"><canvas id="salaryDist" role="img" aria-label="Bar chart salary distribution">Salary dist chart.</canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Top Recruiting Companies</div>
+            <table class="data-table" style="margin-top:8px">
+              <thead><tr><th>Company</th><th>Students</th><th>Avg LPA</th></tr></thead>
+              <tbody>
+                <tr><td>TCS</td><td>68</td><td>₹6.0L</td></tr>
+                <tr><td>Infosys</td><td>52</td><td>₹5.5L</td></tr>
+                <tr><td>Wipro</td><td>38</td><td>₹5.8L</td></tr>
+                <tr><td>Zoho</td><td>24</td><td>₹9.5L</td></tr>
+                <tr><td>Google</td><td>2</td><td>₹25L</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- YEAR-WISE COMPARISON -->
+      <div class="page" id="fYearwise">
+        <div class="section-header">
+          <div><div class="section-title">Year-wise Placement Comparison</div><div class="section-sub">Filter by academic year</div></div>
+        </div>
+        <div class="year-filter">
+          <div class="year-chip active" onclick="setYear(this)">2025–2026</div>
+          <div class="year-chip" onclick="setYear(this)">2024–2025</div>
+          <div class="year-chip" onclick="setYear(this)">2023–2024</div>
+          <div class="year-chip" onclick="setYear(this)">2022–2023</div>
+          <div class="year-chip" onclick="setYear(this)">2021–2022</div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Placement Rate Over Years</div>
+            <div style="position:relative;height:240px"><canvas id="yearwiseChart" role="img" aria-label="Line chart of placement rate over years">Year-wise placement line chart.</canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Package Trend</div>
+            <div style="position:relative;height:240px"><canvas id="pkgTrend" role="img" aria-label="Line chart of avg package trend">Package trend chart.</canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FACULTY ALUMNI -->
+      <div class="page" id="fAlumni">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Total Alumni</div><div class="kpi-value">1,248</div><div class="kpi-icon kpi-purple">🎓</div></div>
+          <div class="kpi-card"><div class="kpi-label">In Product Co.</div><div class="kpi-value">68%</div><div class="kpi-icon kpi-blue">🏭</div></div>
+          <div class="kpi-card"><div class="kpi-label">Avg CTC</div><div class="kpi-value">₹9.4L</div><div class="kpi-icon kpi-green">💰</div></div>
+          <div class="kpi-card"><div class="kpi-label">Abroad</div><div class="kpi-value">12%</div><div class="kpi-icon kpi-amber">🌍</div></div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Hiring Patterns — Top Companies</div>
+            <div style="position:relative;height:240px"><canvas id="hiringPattern" role="img" aria-label="Bar chart hiring pattern by company">Hiring pattern chart.</canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Most In-Demand Skills (Alumni Data)</div>
+            <div style="position:relative;height:240px"><canvas id="demandSkills" role="img" aria-label="Horizontal bar chart demanded skills">Skills demand chart.</canvas></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div class="app" id="adminApp">
+  <div class="sidebar">
+    <div class="sidebar-logo"><div class="logo-text">🎓 EduAnalytics</div><div class="logo-sub">Admin Portal</div></div>
+    <div class="nav-section">Administration</div>
+    <div class="nav-item active" onclick="showPage('admin','aCriteria',this)"><span class="nav-icon">🏢</span>Company Eligibility</div>
+    <div class="nav-item" onclick="showPage('admin','aUsers',this)"><span class="nav-icon">👥</span>User Management</div>
+    <div class="nav-item" onclick="showPage('admin','aStats',this)"><span class="nav-icon">📊</span>Statistics</div>
+    <div class="nav-item" onclick="showPage('admin','aPlaceAnalytics',this)"><span class="nav-icon">🏆</span>Placement Analytics</div>
+    <div class="nav-item" onclick="showPage('admin','aSalary',this)"><span class="nav-icon">💰</span>Salary Analysis</div>
+    <div class="nav-item" onclick="showPage('admin','aDeadlines',this)"><span class="nav-icon">📅</span>Deadline Management</div>
+    <div class="nav-item" onclick="showPage('admin','aScreening',this)"><span class="nav-icon">🔍</span>Eligibility Screening</div>
+    <div class="sidebar-bottom">
+      <div class="profile-mini"><div class="avatar">AD</div><div><div class="pname">Admin</div><div class="prole">System Administrator</div></div></div>
+      <div class="logout-btn" onclick="logout()">🚪 Logout</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="topbar"><div><h2 id="aTopTitle">Company Eligibility Settings</h2><div class="breadcrumb" id="aTopBread">Home / Company Eligibility</div></div><div class="topbar-actions"><div class="notif-btn">🔔</div><div class="notif-btn">⚙️</div></div></div>
+    <div class="content">
+
+      <!-- COMPANY ELIGIBILITY SETTINGS -->
+      <div class="page active" id="aCriteria">
+        <div class="form-card">
+          <div class="chart-title" style="margin-bottom:16px">Set Company Eligibility Criteria</div>
+          <div class="form-row">
+            <div class="field"><label>Company Name</label><input type="text" id="criteriaCompany" placeholder="e.g. TCS, Google, Zoho..."></div>
+            <div class="field"><label>Minimum CGPA</label><input type="number" id="criteriaCgpa" step="0.1" placeholder="e.g. 7.5"></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Required Department</label><select id="criteriaDept"><option>Any</option><option>CS/IT Only</option><option>CS/IT/ECE</option><option>All Engineering</option></select></div>
+            <div class="field"><label>Minimum Internships</label><input type="number" id="criteriaInternships" placeholder="e.g. 1"></div>
+          </div>
+          <div class="form-row single">
+            <div class="field"><label>Required Skills (comma-separated)</label><input type="text" id="criteriaSkills" placeholder="e.g. Java, Python, SQL, DSA"></div>
+          </div>
+          <div class="form-row single">
+            <div class="field"><label>Additional Criteria</label><textarea id="criteriaAdditional" placeholder="e.g. No active backlogs, active arrears not allowed..."></textarea></div>
+          </div>
+          <button class="btn-save" onclick="saveEligibilityCriteria()">💾 Save Criteria</button>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title" style="margin-bottom:16px">Current Eligibility Criteria</div>
+          <table class="data-table">
+            <thead><tr><th>Company</th><th>Min CGPA</th><th>Department</th><th>Skills Required</th><th>Min Internships</th><th>Additional</th></tr></thead>
+            <tbody>
+              <tr><td><b>TCS</b></td><td>7.0</td><td>CS/IT/ECE</td><td>Java / Python</td><td>0</td><td>No arrears</td></tr>
+              <tr><td><b>Infosys</b></td><td>6.5</td><td>Any</td><td>Any Programming</td><td>0</td><td>No active backlogs</td></tr>
+              <tr><td><b>Wipro</b></td><td>6.0</td><td>CS/IT</td><td>—</td><td>0</td><td>—</td></tr>
+              <tr><td><b>Zoho</b></td><td>7.5</td><td>CS/IT</td><td>Java, SQL</td><td>0</td><td>Strong DSA</td></tr>
+              <tr><td><b>Google</b></td><td>9.0</td><td>CS Only</td><td>DSA, System Design</td><td>3</td><td>LeetCode 300+</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- USER MANAGEMENT -->
+      <div class="page" id="aUsers">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Total Students</div><div class="kpi-value">248</div><div class="kpi-icon kpi-blue">🎓</div></div>
+          <div class="kpi-card"><div class="kpi-label">Faculty</div><div class="kpi-value">42</div><div class="kpi-icon kpi-purple">👨‍🏫</div></div>
+          <div class="kpi-card"><div class="kpi-label">Placement Officers</div><div class="kpi-value">4</div><div class="kpi-icon kpi-green">🧑‍💼</div></div>
+          <div class="kpi-card"><div class="kpi-label">Alumni Registered</div><div class="kpi-value">186</div><div class="kpi-icon kpi-amber">🌐</div></div>
+        </div>
+        <div class="form-card" id="addUserForm" style="display:none">
+          <div class="section-header" style="margin-bottom:14px">
+            <div><div class="section-title">Add User</div><div class="section-sub">Create a student, faculty, placement officer, or alumni account</div></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Name</label><input type="text" id="userName" placeholder="e.g. Kavya Raman"></div>
+            <div class="field"><label>Role</label><select id="userRole"><option>Student</option><option>Faculty</option><option>Placement Officer</option><option>Alumni</option></select></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>ID / Reg No</label><input type="text" id="userId" placeholder="e.g. 21CS120"></div>
+            <div class="field"><label>Department</label><input type="text" id="userDept" placeholder="e.g. Computer Science"></div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end">
+            <button class="btn-outline" onclick="toggleAddUserForm(false)">Cancel</button>
+            <button class="btn-save" onclick="addUser()">Save User</button>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="section-header"><div class="chart-title">All Users</div><button class="btn-save" style="padding:10px 18px;font-size:12px" onclick="toggleAddUserForm()">+ Add User</button></div>
+          <div class="search-bar"><span>🔍</span><input type="text" placeholder="Search by name, reg number, email..."></div>
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Role</th><th>ID / Reg No</th><th>Department</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td>Arjun Kumar</td><td><span class="status-pill pill-blue">Student</span></td><td>21CS042</td><td>Computer Science</td><td><span class="status-pill pill-green">Active</span></td><td><button class="btn-sm btn-edit">Edit</button></td></tr>
+              <tr><td>Dr. Ramesh S.</td><td><span class="status-pill pill-purple">Faculty</span></td><td>FAC001</td><td>Computer Science</td><td><span class="status-pill pill-green">Active</span></td><td><button class="btn-sm btn-edit">Edit</button></td></tr>
+              <tr><td>Priya Nair</td><td><span class="status-pill pill-amber">Placement Officer</span></td><td>PO001</td><td>Placement Cell</td><td><span class="status-pill pill-green">Active</span></td><td><button class="btn-sm btn-edit">Edit</button></td></tr>
+              <tr><td>Sneha Rao</td><td><span class="status-pill pill-green">Alumni</span></td><td>18CS001</td><td>Computer Science</td><td><span class="status-pill pill-green">Active</span></td><td><button class="btn-sm btn-edit">Edit</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- STATISTICS -->
+      <div class="page" id="aStats">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Overall Placed</div><div class="kpi-value">89%</div><div class="kpi-icon kpi-green">🏆</div></div>
+          <div class="kpi-card"><div class="kpi-label">Dept Avg CGPA</div><div class="kpi-value">7.82</div><div class="kpi-icon kpi-purple">📈</div></div>
+          <div class="kpi-card"><div class="kpi-label">Avg Package</div><div class="kpi-value">₹7.2L</div><div class="kpi-icon kpi-blue">💰</div></div>
+          <div class="kpi-card"><div class="kpi-label">Internship Rate</div><div class="kpi-value">75%</div><div class="kpi-icon kpi-amber">💼</div></div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-title">Overall Statistics Overview</div>
+            <div style="position:relative;height:240px"><canvas id="statsOverview" role="img" aria-label="Bar chart overall stats">Stats overview chart.</canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Gender Diversity</div>
+            <div style="position:relative;height:240px"><canvas id="genderChart" role="img" aria-label="Pie chart gender diversity">Gender chart.</canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLACEMENT ANALYTICS -->
+      <div class="page" id="aPlaceAnalytics">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Placed</div><div class="kpi-value">221</div><div class="kpi-icon kpi-green">✅</div></div>
+          <div class="kpi-card"><div class="kpi-label">In Process</div><div class="kpi-value">15</div><div class="kpi-icon kpi-amber">⏳</div></div>
+          <div class="kpi-card"><div class="kpi-label">Not Placed</div><div class="kpi-value">12</div><div class="kpi-icon kpi-red" style="background:rgba(239,68,68,.1);color:var(--red)">❌</div></div>
+          <div class="kpi-card"><div class="kpi-label">Unwilling</div><div class="kpi-value">8</div><div class="kpi-icon kpi-purple">🚫</div></div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card full">
+            <div class="chart-title">Placement Analytics — Batch 2021–25</div>
+            <div style="position:relative;height:280px"><canvas id="adminPlaceChart" role="img" aria-label="Stacked bar chart placement analytics">Placement analytics chart.</canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SALARY ANALYSIS -->
+      <div class="page" id="aSalary">
+        <div class="chart-card">
+          <div class="chart-title" style="margin-bottom:16px">Salary Analysis — 2024 Placements</div>
+          <div style="position:relative;height:300px"><canvas id="salaryAnalysis" role="img" aria-label="Bar chart salary analysis by company">Salary analysis chart.</canvas></div>
+        </div>
+      </div>
+
+      <!-- ADMIN DEADLINES -->
+      <div class="page" id="aDeadlines">
+        <div class="form-card" id="adminDeadlineForm" style="display:none">
+          <div class="section-header" style="margin-bottom:14px">
+            <div><div class="section-title">Create Deadline</div><div class="section-sub">Publish a deadline to students, faculty, or alumni</div></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Title</label><input type="text" id="adminDeadlineTitle" placeholder="e.g. Alumni Profile Update"></div>
+            <div class="field"><label>Deadline Date</label><input type="date" id="adminDeadlineDate"></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Audience</label><select id="adminDeadlineAudience"><option>Students</option><option>Faculty</option><option>Alumni</option></select></div>
+            <div class="field"><label>Target Group</label><input type="text" id="adminDeadlineTarget" placeholder="e.g. 3rd Year / CSE Faculty / 2022 Alumni"></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Subject / Category</label><input type="text" id="adminDeadlineSubject" placeholder="e.g. Placement / Assessment / Alumni"></div>
+            <div class="field"><label>Created By</label><input type="text" id="adminDeadlineCreator" value="Admin"></div>
+          </div>
+          <div class="form-row single">
+            <div class="field"><label>Description</label><textarea id="adminDeadlineDescription" placeholder="Instructions, notes, or submission details..."></textarea></div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end">
+            <button class="btn-outline" onclick="toggleAdminDeadlineForm(false)">Cancel</button>
+            <button class="btn-save" onclick="saveAdminDeadline()">Publish Deadline</button>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="section-header"><div class="chart-title">Deadline Management</div><button class="btn-save" onclick="toggleAdminDeadlineForm()" style="padding:10px 18px;font-size:12px">+ Create</button></div>
+          <table class="data-table">
+            <thead><tr><th>Title</th><th>Created By</th><th>Target</th><th>Deadline</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td>Design Thinking Assignment</td><td>Dr. Ramesh S.</td><td>3rd Year</td><td>Mar 15, 2024</td><td><span class="status-pill pill-red">Urgent</span></td><td><button class="btn-sm btn-del">Delete</button></td></tr>
+              <tr><td>OS Lab Record</td><td>Dr. Ramesh S.</td><td>3rd Year</td><td>Mar 20, 2024</td><td><span class="status-pill pill-amber">Active</span></td><td><button class="btn-sm btn-del">Delete</button></td></tr>
+              <tr><td>Mini Project Report</td><td>Dr. Kavitha P.</td><td>3rd Year</td><td>Apr 5, 2024</td><td><span class="status-pill pill-green">Upcoming</span></td><td><button class="btn-sm btn-del">Delete</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ELIGIBILITY SCREENING -->
+      <div class="page" id="aScreening">
+        <div class="section-header">
+          <div><div class="section-title">Eligibility Screening</div><div class="section-sub">Check which students are eligible for which companies</div></div>
+        </div>
+        <div class="form-card" style="display:flex;gap:12px;align-items:flex-end">
+          <div class="field" style="flex:1"><label>Select Company</label><select id="screenCompanySelect" onchange="renderEligibilityScreening()"><option>TCS</option><option>Google</option><option>Zoho</option><option>Infosys</option><option>Wipro</option></select></div>
+          <button class="btn-save" onclick="renderEligibilityScreening()">🔍 Screen Students</button>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title" id="screeningTitle" style="margin-bottom:16px">Eligible Students — TCS</div>
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Reg No</th><th>CGPA</th><th>Skills</th><th>Internships</th><th>Eligibility</th></tr></thead>
+            <tbody id="screeningTableBody">
+              <tr><td>Arjun Kumar</td><td>21CS042</td><td>8.5</td><td>Java, Python, SQL</td><td>2</td><td><span class="status-pill pill-green">✅ Eligible</span></td></tr>
+              <tr><td>Divya P.</td><td>21CS023</td><td>9.2</td><td>Java, React, ML</td><td>1</td><td><span class="status-pill pill-green">✅ Eligible</span></td></tr>
+              <tr><td>Rahul S.</td><td>21CS088</td><td>6.8</td><td>Python, SQL</td><td>0</td><td><span class="status-pill pill-green">✅ Eligible</span></td></tr>
+              <tr><td>Ankit T.</td><td>21CS102</td><td>5.9</td><td>Python</td><td>0</td><td><span class="status-pill pill-red">❌ Not Eligible</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let currentRole = 'Student';
+let chartsInit = {};
+let chartObjects = {};
+const API_BASE = '';
+
+async function apiRequest(path, options={}) {
+  const response = await fetch(`${API_BASE}${path}`, {
+    headers: {'Content-Type':'application/json', ...(options.headers || {})},
+    ...options
+  });
+  if (!response.ok) throw new Error(`API request failed: ${response.status}`);
+  return response.json();
+}
+
+async function loadBackendData() {
+  try {
+    const [companyRules, students] = await Promise.all([
+      apiRequest('/api/company-rules'),
+      apiRequest('/api/students')
+    ]);
+    COMPANY_RULES = companyRules;
+    SCREENING_STUDENTS = students;
+    updateEligibilityCompanyOptions();
+    renderStudentEligibility();
+    refreshRecommendationsIfVisible();
+    if (document.getElementById('aScreening')?.classList.contains('active')) renderEligibilityScreening();
+  } catch (error) {
+    console.warn('Backend unavailable, using local demo data.', error);
+  }
+}
+
+function setRole(el, role) {
+  currentRole = role;
+  document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const lbl = document.getElementById('loginLabel');
+  lbl.textContent = role === 'Student' ? 'Register Number' : role === 'Faculty' ? 'Faculty ID' : 'Admin ID';
+}
+
+function doLogin() {
+  document.getElementById('loginPage').style.display = 'none';
+  loadBackendData();
+  if (currentRole === 'Student') {
+    document.getElementById('studentApp').classList.add('active');
+    setTimeout(initStudentCharts, 300);
+  } else if (currentRole === 'Faculty') {
+    document.getElementById('facultyApp').classList.add('active');
+    setTimeout(initFacultyCharts, 300);
+  } else {
+    document.getElementById('adminApp').classList.add('active');
+    setTimeout(initAdminCharts, 300);
+  }
+}
+
+function logout() {
+  document.querySelectorAll('.app').forEach(a => a.classList.remove('active'));
+  document.getElementById('loginPage').style.display = 'flex';
+}
+
+function showPage(portal, pageId, navEl) {
+  const pages = document.querySelectorAll(`#${portal}App .page`);
+  pages.forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(pageId);
+  if (target) target.classList.add('active');
+  const navItems = document.querySelectorAll(`#${portal}App .nav-item`);
+  navItems.forEach(n => n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  const titles = {
+    sDash:'Dashboard Overview',sAcad:'Academic Performance',sSkills:'Skills & Certifications',
+    sIntern:'Internships',sPlacement:'Placement Status',sRec:'Recommendations',
+    sDeadlines:'Deadlines',sEligibility:'Company Eligibility',sAlumni:'Alumni Insights',
+    fDash:'Faculty Dashboard',fDeadlines:'Assessment Deadlines',fDeptPerf:'Department Performance',
+    fInternship:'Internship Analytics',fPlacement:'Placement Success',fYearwise:'Year-wise Comparison',fAlumni:'Alumni Analytics',
+    aCriteria:'Company Eligibility Settings',aUsers:'User Management',aStats:'Statistics',
+    aPlaceAnalytics:'Placement Analytics',aSalary:'Salary Analysis',aDeadlines:'Deadline Management',aScreening:'Eligibility Screening'
+  };
+  const breadcrumbs = {
+    sDash:'Home / Dashboard',sAcad:'Home / Academic Performance',sSkills:'Home / Skills & Certifications',
+    sIntern:'Home / Internships',sPlacement:'Home / Placement Status',sRec:'Home / Recommendations',
+    sDeadlines:'Home / Deadlines',sEligibility:'Home / Company Eligibility',sAlumni:'Home / Alumni Insights',
+    fDash:'Home / Dashboard',fDeadlines:'Home / Assessment Deadlines',fDeptPerf:'Home / Department Performance',
+    fInternship:'Home / Internship Analytics',fPlacement:'Home / Placement Success',fYearwise:'Home / Year-wise Comparison',fAlumni:'Home / Alumni Analytics',
+    aCriteria:'Admin / Company Eligibility',aUsers:'Admin / User Management',aStats:'Admin / Statistics',
+    aPlaceAnalytics:'Admin / Placement Analytics',aSalary:'Admin / Salary Analysis',aDeadlines:'Admin / Deadline Management',aScreening:'Admin / Eligibility Screening'
+  };
+  const titleEl = document.getElementById(portal.charAt(0)+portal.slice(1)+'TopTitle') || document.getElementById(portal+'TopTitle');
+  if (document.getElementById(`${portal.charAt(0)}TopTitle`)) {
+    document.getElementById(`${portal.charAt(0)}TopTitle`).textContent = titles[pageId] || '';
+    document.getElementById(`${portal.charAt(0)}TopBread`).textContent = breadcrumbs[pageId] || '';
+  }
+  if (pageId === 'sRec') renderRecommendations();
+  if (pageId === 'aScreening') renderEligibilityScreening();
+  setTimeout(() => initChartOnPage(pageId), 100);
+}
+
+function setSemTab(el, semId) {
+  document.querySelectorAll('#semTabs .tab-btn').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.sem-marks').forEach(m => m.style.display = 'none');
+  document.getElementById(semId).style.display = 'block';
+}
+
+function setAlumniTab(el, tabId) {
+  document.querySelectorAll('.alumni-sub-item').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#aProfiles,#aSkills,#aRoles,#aRec').forEach(t => t.style.display = 'none');
+  document.getElementById(tabId).style.display = 'block';
+  if (tabId === 'aSkills' && !chartsInit.alumniSkill) { initAlumniSkillChart(); chartsInit.alumniSkill = true; }
+  if (tabId === 'aRoles' && !chartsInit.roleChart) { initRoleChart(); chartsInit.roleChart = true; }
+}
+
+function setYear(el) {
+  document.querySelectorAll('.year-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  updateYearwiseComparison(el.textContent.trim());
+}
+
+async function saveEligibilityCriteria() {
+  const company = document.getElementById('criteriaCompany').value.trim();
+  const minCgpa = parseFloat(document.getElementById('criteriaCgpa').value);
+  const department = document.getElementById('criteriaDept').value;
+  const minInternships = parseInt(document.getElementById('criteriaInternships').value || '0', 10);
+  const skillsText = document.getElementById('criteriaSkills').value.trim();
+  const additional = document.getElementById('criteriaAdditional').value.trim() || '-';
+  if (!company || Number.isNaN(minCgpa)) {
+    alert('Please enter company name and minimum CGPA.');
+    return;
+  }
+
+  const skills = skillsText ? skillsText.split(',').map(skill => skill.trim()).filter(Boolean) : [];
+  const rule = {
+    name: company,
+    role: 'Custom Role',
+    minCgpa,
+    package: 'Configured',
+    skills,
+    match: 'all',
+    minInternships,
+    certs: [],
+    department,
+    additional
+  };
+
+  const existingIndex = COMPANY_RULES.findIndex(item => item.name.toLowerCase() === company.toLowerCase());
+  if (existingIndex >= 0) COMPANY_RULES[existingIndex] = {...COMPANY_RULES[existingIndex], ...rule};
+  else COMPANY_RULES.push(rule);
+
+  try {
+    const savedRule = await apiRequest('/api/company-rules', {
+      method:'POST',
+      body:JSON.stringify(rule)
+    });
+    if (existingIndex >= 0) COMPANY_RULES[existingIndex] = savedRule;
+    else COMPANY_RULES[COMPANY_RULES.length - 1] = savedRule;
+  } catch (error) {
+    console.warn('Criteria saved locally only because backend is unavailable.', error);
+  }
+
+  upsertCriteriaRow(rule);
+  renderStudentEligibility();
+  updateEligibilityCompanyOptions();
+  renderEligibilityScreening(company);
+  refreshRecommendationsIfVisible();
+  clearCriteriaForm();
+  alert('Eligibility criteria saved and published to students.');
+}
+
+function upsertCriteriaRow(rule) {
+  const tbody = document.querySelector('#aCriteria table.data-table tbody');
+  if (!tbody) return;
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const existing = rows.find(row => row.cells[0].textContent.trim().toLowerCase() === rule.name.toLowerCase());
+  const row = existing || document.createElement('tr');
+  row.innerHTML = `
+    <td><b>${escapeHtml(rule.name)}</b></td>
+    <td>${rule.minCgpa.toFixed(1)}</td>
+    <td>${escapeHtml(rule.department)}</td>
+    <td>${escapeHtml(rule.skills.length ? rule.skills.join(', ') : '-')}</td>
+    <td>${rule.minInternships}</td>
+    <td>${escapeHtml(rule.additional || '-')}</td>
+  `;
+  if (!existing) tbody.prepend(row);
+}
+
+function renderStudentEligibility() {
+  const page = document.getElementById('sEligibility');
+  if (!page) return;
+  page.querySelectorAll('.company-card').forEach(card => card.remove());
+  const profile = getStudentProfile();
+  const cards = COMPANY_RULES.map(rule => {
+    const fit = analyzeCompanyFit(rule, profile);
+    const card = document.createElement('div');
+    card.className = 'company-card';
+    const dept = rule.department || 'Any';
+    const skills = rule.skills && rule.skills.length ? rule.skills.join(' / ') : 'Any';
+    card.innerHTML = `
+      <div class="company-header">
+        <div><div class="company-name">🏢 ${escapeHtml(rule.name)}</div><div class="company-role">${escapeHtml(rule.role || 'Custom Role')} · Package: ${escapeHtml(rule.package || 'Configured')}</div></div>
+        <div class="eligibility-indicator ${fit.eligible ? 'elig-yes' : 'elig-no'}">${fit.eligible ? '✅ Eligible' : '❌ Not Eligible'}</div>
+      </div>
+      <div class="criteria-row">
+        <div class="crit-item ${profile.cgpa >= rule.minCgpa ? 'crit-met' : 'crit-fail'}">Min CGPA: <span class="crit-val">${rule.minCgpa.toFixed(1)}</span> &nbsp; Your: ${profile.cgpa.toFixed(1)}</div>
+        <div class="crit-item crit-met">Dept: <span class="crit-val">${escapeHtml(dept)}</span></div>
+        <div class="crit-item ${fit.missing.length ? 'crit-fail' : 'crit-met'}">Skills: <span class="crit-val">${escapeHtml(skills)}</span>${fit.missing.length ? ` &nbsp; Missing: ${escapeHtml(fit.missing.join(', '))}` : ' &nbsp; ✓'}</div>
+        <div class="crit-item ${profile.internships >= rule.minInternships ? 'crit-met' : 'crit-fail'}">Min Internships: <span class="crit-val">${rule.minInternships}</span> &nbsp; You: ${profile.internships}</div>
+      </div>
+    `;
+    return card;
+  });
+  const header = page.querySelector('.section-header');
+  cards.forEach(card => header.insertAdjacentElement('afterend', card));
+}
+
+function clearCriteriaForm() {
+  ['criteriaCompany','criteriaCgpa','criteriaInternships','criteriaSkills','criteriaAdditional'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('criteriaDept').value = 'Any';
+}
+
+function toggleAddUserForm(show) {
+  const form = document.getElementById('addUserForm');
+  if (!form) return;
+  const shouldShow = typeof show === 'boolean' ? show : form.style.display === 'none';
+  form.style.display = shouldShow ? 'block' : 'none';
+  if (shouldShow) document.getElementById('userName').focus();
+}
+
+async function addUser() {
+  const name = document.getElementById('userName').value.trim();
+  const role = document.getElementById('userRole').value;
+  const id = document.getElementById('userId').value.trim();
+  const dept = document.getElementById('userDept').value.trim();
+  if (!name || !id || !dept) {
+    alert('Please enter name, ID / register number, and department.');
+    return;
+  }
+
+  try {
+    await apiRequest('/api/users', {
+      method:'POST',
+      body:JSON.stringify({name, role, id, department:dept})
+    });
+  } catch (error) {
+    console.warn('User added on page only because backend is unavailable.', error);
+  }
+
+  const tbody = document.querySelector('#aUsers table.data-table tbody');
+  if (!tbody) return;
+  const row = document.createElement('tr');
+  const pillClass = role === 'Student' ? 'pill-blue' : role === 'Faculty' ? 'pill-purple' : role === 'Placement Officer' ? 'pill-amber' : 'pill-green';
+  row.innerHTML = `
+    <td>${escapeHtml(name)}</td>
+    <td><span class="status-pill ${pillClass}">${escapeHtml(role)}</span></td>
+    <td>${escapeHtml(id)}</td>
+    <td>${escapeHtml(dept)}</td>
+    <td><span class="status-pill pill-green">Active</span></td>
+    <td><button class="btn-sm btn-edit">Edit</button></td>
+  `;
+  tbody.prepend(row);
+  ['userName','userId','userDept'].forEach(fieldId => document.getElementById(fieldId).value = '');
+  document.getElementById('userRole').value = 'Student';
+  toggleAddUserForm(false);
+}
+
+async function createAssessmentDeadline() {
+  const titleInput = document.getElementById('deadlineTitle');
+  const dateInput = document.getElementById('deadlineDate');
+  const targetInput = document.getElementById('deadlineTarget');
+  const subjectInput = document.getElementById('deadlineSubject');
+  const descriptionInput = document.getElementById('deadlineDescription');
+  const audienceInput = document.getElementById('deadlineAudience');
+  const title = titleInput.value.trim();
+  const date = dateInput.value;
+  const target = targetInput.value;
+  const subject = subjectInput.value.trim();
+  const description = descriptionInput.value.trim();
+  const audience = audienceInput ? audienceInput.value : 'Students';
+
+  if (!title || !date || !subject) {
+    alert('Please enter the title, deadline date, and subject.');
+    return;
+  }
+
+  const deadline = {
+    title,
+    date,
+    target,
+    subject,
+    description,
+    audience,
+    createdBy: 'Dr. Ramesh S.'
+  };
+
+  const mailResult = await publishDeadline(deadline);
+
+  titleInput.value = '';
+  dateInput.value = '';
+  subjectInput.value = '';
+  descriptionInput.value = '';
+  targetInput.value = '3rd Year';
+  if (audienceInput) audienceInput.value = 'Students';
+  alert(`Deadline created for ${audience}. ${formatMailResult(mailResult)}`);
+}
+
+function toggleAdminDeadlineForm(show) {
+  const form = document.getElementById('adminDeadlineForm');
+  if (!form) return;
+  const shouldShow = typeof show === 'boolean' ? show : form.style.display === 'none';
+  form.style.display = shouldShow ? 'block' : 'none';
+  if (shouldShow) document.getElementById('adminDeadlineTitle').focus();
+}
+
+async function saveAdminDeadline() {
+  const titleInput = document.getElementById('adminDeadlineTitle');
+  const dateInput = document.getElementById('adminDeadlineDate');
+  const audienceInput = document.getElementById('adminDeadlineAudience');
+  const targetInput = document.getElementById('adminDeadlineTarget');
+  const subjectInput = document.getElementById('adminDeadlineSubject');
+  const creatorInput = document.getElementById('adminDeadlineCreator');
+  const descriptionInput = document.getElementById('adminDeadlineDescription');
+  const title = titleInput.value.trim();
+  const date = dateInput.value;
+  const audience = audienceInput.value;
+  const target = targetInput.value.trim() || audience;
+  const subject = subjectInput.value.trim() || 'General';
+  const createdBy = creatorInput.value.trim() || 'Admin';
+  const description = descriptionInput.value.trim();
+
+  if (!title || !date) {
+    alert('Please enter the title and deadline date.');
+    return;
+  }
+
+  const deadline = {title, date, audience, target, subject, createdBy, description};
+  const mailResult = await publishDeadline(deadline, {trackInAdmin:true});
+
+  titleInput.value = '';
+  dateInput.value = '';
+  audienceInput.value = 'Students';
+  targetInput.value = '';
+  subjectInput.value = '';
+  creatorInput.value = 'Admin';
+  descriptionInput.value = '';
+  toggleAdminDeadlineForm(false);
+  alert(`Deadline published to ${audience}. ${formatMailResult(mailResult)}`);
+}
+
+async function publishDeadline(deadline, options={}) {
+  let mailResult = {mail:{sent:0, failed:0, recipients:0}};
+  try {
+    mailResult = await apiRequest('/api/deadlines', {
+      method:'POST',
+      body:JSON.stringify(deadline)
+    });
+  } catch (error) {
+    console.warn('Deadline shown on page only because backend mail alert service is unavailable.', error);
+  }
+
+  if (deadline.audience === 'Students') {
+    addStudentDeadlineCard(deadline);
+    addStudentDeadlineActivity(deadline);
+  } else if (deadline.audience === 'Faculty') {
+    addFacultyDeadlineRow(deadline);
+  } else if (deadline.audience === 'Alumni') {
+    addAlumniDeadlineCard(deadline);
+  }
+  if (options.trackInAdmin) addAdminDeadlineRow(deadline);
+  return mailResult;
+}
+
+function formatMailResult(mailResult) {
+  const mail = mailResult && mailResult.mail ? mailResult.mail : {sent:0, failed:0, recipients:0};
+  if (!mail.recipients) return 'No active email recipients found.';
+  if (mail.failed) return `${mail.sent || 0} email(s) sent through SMTP, ${mail.failed} failed.`;
+  return `${mail.sent || 0} email(s) sent through SMTP.`;
+}
+
+function addFacultyDeadlineRow(deadline) {
+  const tbody = document.querySelector('#fDeadlines table.data-table tbody');
+  if (!tbody) return;
+  const timing = getDeadlineTiming(deadline.date);
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${escapeHtml(deadline.title)}</td>
+    <td>${escapeHtml(deadline.target)}</td>
+    <td>${formatFullDate(deadline.date)}</td>
+    <td><span class="days-chip ${timing.dayClass}">${timing.shortText}</span></td>
+    <td><span class="status-pill ${timing.pillClass}">${timing.status}</span></td>
+    <td><button class="btn-sm btn-edit">Edit</button> <button class="btn-sm btn-del">Delete</button></td>
+  `;
+  tbody.prepend(row);
+}
+
+function addStudentDeadlineCard(deadline) {
+  const studentPage = document.getElementById('sDeadlines');
+  const emailCard = studentPage && studentPage.querySelector('.chart-card');
+  if (!studentPage || !emailCard) return;
+  const timing = getDeadlineTiming(deadline.date);
+  const card = document.createElement('div');
+  card.className = 'deadline-card';
+  card.innerHTML = `
+    <div class="deadline-icon ${timing.iconClass}">📝</div>
+    <div class="deadline-info"><h4>${escapeHtml(deadline.title)}</h4><p>Subject: ${escapeHtml(deadline.subject)} · ${escapeHtml(deadline.target)}</p></div>
+    <div style="text-align:right"><div style="font-size:12px;color:var(--text2);margin-bottom:4px">Due: ${formatFullDate(deadline.date)}</div><div class="days-chip ${timing.dayClass}">${timing.longText}</div></div>
+  `;
+  studentPage.insertBefore(card, emailCard);
+}
+
+function addStudentDeadlineActivity(deadline) {
+  const tbody = document.querySelector('#sDash .data-table tbody');
+  if (!tbody) return;
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>New Assessment Deadline</td>
+    <td>${escapeHtml(deadline.title)} due on ${formatFullDate(deadline.date)}</td>
+    <td>${new Date().toISOString().slice(0, 10)}</td>
+    <td><span class="status-pill pill-amber">Pending</span></td>
+  `;
+  tbody.prepend(row);
+}
+
+function addAdminDeadlineRow(deadline) {
+  const tbody = document.querySelector('#aDeadlines table.data-table tbody');
+  if (!tbody) return;
+  const timing = getDeadlineTiming(deadline.date);
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${escapeHtml(deadline.title)}</td>
+    <td>${escapeHtml(deadline.createdBy || 'Admin')}</td>
+    <td>${escapeHtml(deadline.audience || 'Students')} · ${escapeHtml(deadline.target || '-')}</td>
+    <td>${formatFullDate(deadline.date)}</td>
+    <td><span class="status-pill ${timing.pillClass}">${timing.status}</span></td>
+    <td><button class="btn-sm btn-del" onclick="this.closest('tr').remove()">Delete</button></td>
+  `;
+  tbody.prepend(row);
+}
+
+function addAlumniDeadlineCard(deadline) {
+  const list = document.getElementById('alumniDeadlineList');
+  if (!list) return;
+  const empty = document.getElementById('alumniDeadlineEmpty');
+  if (empty) empty.remove();
+  const timing = getDeadlineTiming(deadline.date);
+  const card = document.createElement('div');
+  card.className = 'deadline-card';
+  card.innerHTML = `
+    <div class="deadline-icon ${timing.iconClass}">📣</div>
+    <div class="deadline-info"><h4>${escapeHtml(deadline.title)}</h4><p>${escapeHtml(deadline.subject || 'Alumni')} · ${escapeHtml(deadline.target || 'Alumni')}</p></div>
+    <div style="text-align:right"><div style="font-size:12px;color:var(--text2);margin-bottom:4px">Due: ${formatFullDate(deadline.date)}</div><div class="days-chip ${timing.dayClass}">${timing.longText}</div></div>
+  `;
+  list.prepend(card);
+}
+
+function getDeadlineTiming(dateValue) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(`${dateValue}T00:00:00`);
+  const days = Math.ceil((due - today) / 86400000);
+  if (days <= 3) return {shortText:`${Math.max(days, 0)} days`, longText:days < 0 ? 'Overdue' : `${days} days left`, status:days < 0 ? 'Overdue' : 'Urgent', dayClass:'days-urgent', pillClass:'pill-red', iconClass:'dl-red'};
+  if (days <= 10) return {shortText:`${days} days`, longText:`${days} days left`, status:'Active', dayClass:'days-soon', pillClass:'pill-amber', iconClass:'dl-amber'};
+  return {shortText:`${days} days`, longText:`${days} days left`, status:'Upcoming', dayClass:'days-ok', pillClass:'pill-green', iconClass:'dl-green'};
+}
+
+function formatFullDate(value) {
+  return new Date(`${value}T00:00:00`).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+}
+
+function addSkill() {
+  const input = document.getElementById('newSkillInput');
+  const val = input.value.trim();
+  if (!val) return;
+  const wrap = document.getElementById('skillsContainer');
+  const tag = document.createElement('span');
+  tag.className = 'skill-tag';
+  tag.innerHTML = `${val} <span class="remove" onclick="removeSkill(this)">×</span>`;
+  wrap.appendChild(tag);
+  input.value = '';
+  refreshRecommendationsIfVisible();
+}
+
+function removeSkill(el) {
+  el.parentElement.remove();
+  refreshRecommendationsIfVisible();
+}
+
+function openCertificatePicker() {
+  const input = document.getElementById('certFileInput');
+  if (input) input.click();
+}
+
+function handleCertificateUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  addCertificateCard(file);
+  event.target.value = '';
+}
+
+function handleCertDragOver(event) {
+  event.preventDefault();
+  event.currentTarget.classList.add('dragging');
+}
+
+function handleCertDragLeave(event) {
+  event.currentTarget.classList.remove('dragging');
+}
+
+function handleCertDrop(event) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('dragging');
+  const file = event.dataTransfer.files && event.dataTransfer.files[0];
+  if (file) addCertificateCard(file);
+}
+
+function addCertificateCard(file) {
+  const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+  const allowedExtensions = /\.(pdf|jpe?g|png)$/i;
+  const maxSize = 5 * 1024 * 1024;
+  if (!allowedTypes.includes(file.type) && !allowedExtensions.test(file.name)) {
+    alert('Please upload a PDF, JPG, or PNG certificate.');
+    return;
+  }
+  if (file.size > maxSize) {
+    alert('Certificate file must be 5MB or smaller.');
+    return;
+  }
+
+  const list = document.getElementById('certList');
+  const addCard = document.getElementById('addCertCard');
+  if (!list) return;
+
+  const card = document.createElement('div');
+  card.className = 'cert-item';
+
+  const icon = document.createElement('div');
+  icon.className = 'cert-icon';
+  icon.textContent = file.type === 'application/pdf' || /\.pdf$/i.test(file.name) ? '📄' : '🖼️';
+
+  const name = document.createElement('div');
+  name.className = 'cert-name';
+  name.textContent = file.name.replace(/\.[^/.]+$/, '');
+
+  const date = document.createElement('div');
+  date.className = 'cert-date';
+  date.textContent = new Date().toLocaleDateString('en-US', {month:'short', year:'numeric'});
+
+  const badge = document.createElement('div');
+  badge.className = 'cert-badge';
+  badge.textContent = 'Pending Review';
+
+  card.append(icon, name, date, badge);
+  list.insertBefore(card, addCard || null);
+  refreshRecommendationsIfVisible();
+}
+
+function toggleInternshipForm(show) {
+  const form = document.getElementById('internshipForm');
+  if (!form) return;
+  const shouldShow = typeof show === 'boolean' ? show : form.style.display === 'none';
+  form.style.display = shouldShow ? 'block' : 'none';
+  if (shouldShow) {
+    form.scrollIntoView({behavior:'smooth', block:'start'});
+    const company = document.getElementById('internCompany');
+    if (company) company.focus();
+  }
+}
+
+function saveInternship(event) {
+  event.preventDefault();
+  const company = document.getElementById('internCompany').value.trim();
+  const role = document.getElementById('internRole').value.trim();
+  const start = document.getElementById('internStart').value;
+  const end = document.getElementById('internEnd').value;
+  const duration = document.getElementById('internDuration').value.trim();
+  const stipend = document.getElementById('internStipend').value.trim();
+  const location = document.getElementById('internLocation').value.trim();
+  const status = document.getElementById('internStatus').value;
+  if (!company || !role || !start || !end || !duration || !location) return;
+
+  const card = document.createElement('div');
+  card.className = 'intern-card';
+  const pillClass = status === 'Completed' ? 'pill-green' : status === 'Ongoing' ? 'pill-amber' : 'pill-blue';
+  card.innerHTML = `
+    <div class="intern-header">
+      <div><div class="intern-co">${escapeHtml(company)}</div><div class="intern-role">${escapeHtml(role)}</div></div>
+      <span class="status-pill ${pillClass}">${escapeHtml(status)}</span>
+    </div>
+    <div class="intern-meta">
+      <div class="intern-meta-item">📅 <span>${formatDate(start)} - ${formatDate(end)}</span></div>
+      <div class="intern-meta-item">⏱ <span>${escapeHtml(duration)}</span></div>
+      <div class="intern-meta-item">💰 <span>${escapeHtml(stipend || 'Unpaid')}</span></div>
+      <div class="intern-meta-item">📍 <span>${escapeHtml(location)}</span></div>
+    </div>
+  `;
+  const opportunities = document.getElementById('internshipOpportunities');
+  opportunities.parentElement.insertBefore(card, opportunities);
+  event.target.reset();
+  toggleInternshipForm(false);
+  refreshRecommendationsIfVisible();
+}
+
+function formatDate(value) {
+  return new Date(value).toLocaleDateString('en-US', {month:'short', year:'numeric'});
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+}
+
+let COMPANY_RULES = [
+  {name:'TCS', role:'Software Engineer', minCgpa:7.0, package:'₹6-7 LPA', skills:['Java','Python'], match:'any', minInternships:0, certs:['Java SE']},
+  {name:'Infosys', role:'Systems Engineer', minCgpa:6.5, package:'₹5-6 LPA', skills:['Programming'], match:'any', minInternships:0, certs:['Python for Data Science']},
+  {name:'Wipro', role:'Project Engineer', minCgpa:6.0, package:'₹5.5 LPA', skills:['Java','Python'], match:'any', minInternships:0, certs:['Cloud Practitioner']},
+  {name:'Zoho', role:'Member Technical Staff', minCgpa:7.5, package:'₹7-12 LPA', skills:['Java','SQL','DSA'], match:'all', minInternships:0, certs:['Oracle Java SE']},
+  {name:'Google', role:'Software Engineer', minCgpa:9.0, package:'₹25+ LPA', skills:['DSA','System Design','Python'], match:'all', minInternships:3, certs:['Google Cloud ACE']}
+];
+
+let SCREENING_STUDENTS = [
+  {name:'Arjun Kumar', regNo:'21CS042', cgpa:8.5, department:'Computer Science', skills:['Java','Python','SQL','Web Development','Machine Learning'], internships:2, certifications:['AWS Cloud Practitioner']},
+  {name:'Divya Prakash', regNo:'21CS023', cgpa:9.2, department:'Computer Science', skills:['Java','React','Machine Learning','DSA','System Design','Python'], internships:3, certifications:['Google Cloud ACE']},
+  {name:'Rahul Srinivasan', regNo:'21CS088', cgpa:6.8, department:'Information Technology', skills:['Python','SQL','Web Development'], internships:0, certifications:['Python for Data Science']},
+  {name:'Ankit Thomas', regNo:'21CS102', cgpa:5.9, department:'Computer Science', skills:['Python'], internships:0, certifications:[]},
+  {name:'Kavya Raman', regNo:'21IT017', cgpa:7.8, department:'Information Technology', skills:['Java','SQL','DSA'], internships:1, certifications:['Oracle Java SE']},
+  {name:'Sneha Rao', regNo:'21CS001', cgpa:9.6, department:'Computer Science', skills:['DSA','System Design','Python','Cloud Computing','Java'], internships:4, certifications:['Google Cloud ACE','AWS Cloud Practitioner']},
+  {name:'Mohan Kumar', regNo:'21CS014', cgpa:8.1, department:'Computer Science', skills:['Java','Python','Cloud Computing'], internships:1, certifications:['Cloud Practitioner']},
+  {name:'Priya Lakshmi', regNo:'21IT058', cgpa:8.4, department:'Information Technology', skills:['Java','SQL','React','DSA'], internships:2, certifications:['Oracle Java SE']}
+];
+
+const ALUMNI_SKILL_DEMAND = [
+  {skill:'DSA', weight:92},
+  {skill:'Python', weight:88},
+  {skill:'Java', weight:84},
+  {skill:'System Design', weight:78},
+  {skill:'SQL', weight:72},
+  {skill:'Cloud Computing', weight:68},
+  {skill:'React', weight:62},
+  {skill:'Machine Learning', weight:58}
+];
+
+function renderRecommendations() {
+  const summary = document.getElementById('recSummary');
+  const left = document.getElementById('recLeft');
+  const right = document.getElementById('recRight');
+  if (!summary || !left || !right) return;
+
+  const profile = getStudentProfile();
+  const analyses = COMPANY_RULES.map(company => analyzeCompanyFit(company, profile));
+  const eligible = analyses.filter(item => item.eligible);
+  const closest = analyses.filter(item => !item.eligible).sort((a,b) => b.score - a.score)[0];
+  const missingSkills = rankMissingSkills(analyses, profile);
+  const certs = recommendCertifications(analyses, profile);
+  const roadmap = buildRoadmap(profile, missingSkills, certs, closest);
+
+  summary.innerHTML = `
+    <div class="avatar-lg">AI</div>
+    <div>
+      <h3>Analysis Result: ${eligible.length}/${COMPANY_RULES.length} target companies eligible</h3>
+      <p>Profile read: CGPA <b>${profile.cgpa.toFixed(2)}</b>, ${profile.skills.length} skills, ${profile.internships} internships, ${profile.certifications.length} certifications. Best current matches: <b>${eligible.map(item => item.company.name).join(', ') || 'None yet'}</b>.</p>
+    </div>
+  `;
+
+  left.innerHTML = `
+    ${makeRecCard('🎯','Company Fit', makeCompanyFitHtml(analyses))}
+    ${makeRecCard('🚀','Skill Gaps to Close', `
+      <p>These are ranked from company requirements and alumni demand.</p>
+      <div class="skills-wrap" style="margin-top:12px;margin-bottom:0">${missingSkills.map(item => `<span class="skill-tag">${escapeHtml(item.skill)} · ${item.reason}</span>`).join('') || '<span class="skill-tag">No major skill gaps</span>'}</div>
+    `)}
+  `;
+
+  right.innerHTML = `
+    ${makeRecCard('📜','Certification Suggestions', `
+      <p>Recommended because they support the companies where your profile is closest.</p>
+      <div class="skills-wrap" style="margin-top:12px;margin-bottom:0">${certs.map(cert => `<span class="skill-tag">${escapeHtml(cert)}</span>`).join('') || '<span class="skill-tag">Existing certificates are enough for current targets</span>'}</div>
+    `)}
+    ${makeRecCard('🧭','Personal Roadmap', makeRoadmapHtml(roadmap))}
+    ${makeRecCard('📊','Alumni-Based Insight', `<p>Top alumni skills for CS/product roles are <b>DSA, Python, Java, System Design, and SQL</b>. Your profile already covers <b>${profile.skills.filter(skill => ['DSA','Python','Java','System Design','SQL'].some(s => sameSkill(skill, s))).join(', ') || 'none of these fully'}</b>.</p>`)}
+  `;
+}
+
+function getStudentProfile() {
+  const cgpaText = Array.from(document.querySelectorAll('#sAcad .kpi-card')).find(card => card.textContent.includes('Average CGPA'))?.querySelector('.kpi-value')?.textContent || '8.5';
+  const skills = Array.from(document.querySelectorAll('#skillsContainer .skill-tag')).map(tag => tag.childNodes[0].textContent.trim()).filter(Boolean);
+  const certifications = Array.from(document.querySelectorAll('#certList .cert-name')).map(cert => cert.textContent.trim()).filter(name => name && name !== 'Add Certificate');
+  const internshipCards = Array.from(document.querySelectorAll('#sIntern > .intern-card'));
+  return {cgpa:parseFloat(cgpaText) || 0, department:'Computer Science', skills, certifications, internships:internshipCards.length, leetcode:100};
+}
+
+function analyzeCompanyFit(company, profile) {
+  const cgpaOk = profile.cgpa >= company.minCgpa;
+  const internshipOk = profile.internships >= company.minInternships;
+  const matchedSkills = company.skills.filter(req => profile.skills.some(skill => sameSkill(skill, req)));
+  const skillOk = company.match === 'all' ? matchedSkills.length === company.skills.length : matchedSkills.length > 0 || company.skills.includes('Programming');
+  const missing = company.skills.filter(req => !matchedSkills.includes(req) && req !== 'Programming');
+  const checks = [cgpaOk, internshipOk, skillOk];
+  const score = Math.round((checks.filter(Boolean).length / checks.length) * 100);
+  return {company, eligible:checks.every(Boolean), score, missing, cgpaGap:Math.max(0, company.minCgpa - profile.cgpa), internshipGap:Math.max(0, company.minInternships - profile.internships)};
+}
+
+function updateEligibilityCompanyOptions() {
+  const select = document.getElementById('screenCompanySelect');
+  if (!select) return;
+  const selected = select.value || 'TCS';
+  select.innerHTML = COMPANY_RULES.map(rule => `<option>${escapeHtml(rule.name)}</option>`).join('');
+  select.value = COMPANY_RULES.some(rule => rule.name === selected) ? selected : COMPANY_RULES[0]?.name || '';
+}
+
+async function renderEligibilityScreening(selectedCompany) {
+  updateEligibilityCompanyOptions();
+  const select = document.getElementById('screenCompanySelect');
+  const tbody = document.getElementById('screeningTableBody');
+  const title = document.getElementById('screeningTitle');
+  if (!select || !tbody || !title) return;
+
+  if (selectedCompany) select.value = selectedCompany;
+  const companyName = select.value || COMPANY_RULES[0]?.name;
+  const rule = COMPANY_RULES.find(item => item.name === companyName) || COMPANY_RULES[0];
+  if (!rule) return;
+
+  title.textContent = `Eligible Students - ${rule.name}`;
+  let screened = [];
+  try {
+    screened = await apiRequest(`/api/eligibility-screening?company=${encodeURIComponent(rule.name)}`);
+  } catch (error) {
+    console.warn('Using local screening data because backend is unavailable.', error);
+    screened = SCREENING_STUDENTS
+      .map(student => ({student, fit:analyzeCompanyFit(rule, student)}))
+      .filter(item => item.fit.eligible)
+      .map(item => item.student);
+  }
+
+  screened.sort((a, b) => b.cgpa - a.cgpa || b.internships - a.internships);
+
+  if (!screened.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text2);padding:18px">No eligible students found for ${escapeHtml(rule.name)}.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = screened.map(student => `
+    <tr>
+      <td>${escapeHtml(student.name)}</td>
+      <td>${escapeHtml(student.regNo)}</td>
+      <td>${student.cgpa.toFixed(1)}</td>
+      <td>${escapeHtml(student.skills.join(', '))}</td>
+      <td>${student.internships}</td>
+      <td><span class="status-pill pill-green">✅ Eligible</span></td>
+    </tr>
+  `).join('');
+}
+
+function rankMissingSkills(analyses, profile) {
+  const map = new Map();
+  analyses.forEach(item => item.missing.forEach(skill => map.set(skill, (map.get(skill) || 0) + (item.company.name === 'Google' ? 3 : 2))));
+  ALUMNI_SKILL_DEMAND.forEach(item => {
+    if (!profile.skills.some(skill => sameSkill(skill, item.skill))) map.set(item.skill, (map.get(item.skill) || 0) + item.weight / 50);
+  });
+  return Array.from(map.entries()).sort((a,b) => b[1] - a[1]).slice(0,5).map(([skill, score]) => ({skill, reason:score >= 3 ? 'high priority' : 'useful'}));
+}
+
+function recommendCertifications(analyses, profile) {
+  const owned = profile.certifications.join(' ').toLowerCase();
+  const certs = [];
+  analyses.filter(item => item.score >= 65).forEach(item => item.company.certs.forEach(cert => {
+    if (!owned.includes(cert.toLowerCase()) && !certs.includes(cert)) certs.push(cert);
+  }));
+  if (!owned.includes('aws')) certs.unshift('AWS Cloud Practitioner');
+  return certs.slice(0,4);
+}
+
+function buildRoadmap(profile, missingSkills, certs, closest) {
+  const steps = [];
+  if (missingSkills.length) steps.push(`Learn ${missingSkills.slice(0,2).map(item => item.skill).join(' and ')} first.`);
+  if (profile.leetcode < 150) steps.push('Increase DSA practice to at least 150 LeetCode problems.');
+  if (certs.length) steps.push(`Complete ${certs[0]} certification.`);
+  if (closest && closest.internshipGap > 0) steps.push(`Add ${closest.internshipGap} more internship or project experience for ${closest.company.name}.`);
+  if (closest && closest.cgpaGap > 0) steps.push(`Raise CGPA by ${closest.cgpaGap.toFixed(1)} to reach ${closest.company.name} criteria.`);
+  steps.push('Build or document 2 portfolio projects aligned with your target role.');
+  return steps.slice(0,5);
+}
+
+function makeCompanyFitHtml(analyses) {
+  return `<div style="display:flex;flex-direction:column;gap:8px">${analyses.map(item => `
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.05)">
+      <span style="font-size:13px"><b>${escapeHtml(item.company.name)}</b> · ${escapeHtml(item.company.package)}</span>
+      <span class="status-pill ${item.eligible ? 'pill-green' : item.score >= 67 ? 'pill-amber' : 'pill-red'}">${item.eligible ? 'Eligible' : item.score + '% fit'}</span>
+    </div>`).join('')}</div>`;
+}
+
+function makeRoadmapHtml(steps) {
+  return `<div style="margin-top:10px">${steps.map((step, index) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:${index === steps.length - 1 ? 'none' : '1px solid rgba(0,0,0,.05)'}">
+      <span style="background:var(--grad);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${index + 1}</span>
+      <span style="font-size:13px">${escapeHtml(step)}</span>
+    </div>`).join('')}</div>`;
+}
+
+function makeRecCard(icon, title, body) {
+  return `<div class="rec-card"><div class="rec-icon">${icon}</div><h4>${escapeHtml(title)}</h4>${body}</div>`;
+}
+
+function sameSkill(actual, required) {
+  const a = actual.toLowerCase();
+  const r = required.toLowerCase();
+  if (r === 'programming') return ['java','python','sql','web','react','machine learning'].some(token => a.includes(token));
+  if (r === 'dsa') return a.includes('dsa') || a.includes('data structures');
+  if (r === 'cloud computing') return a.includes('cloud') || a.includes('aws') || a.includes('gcp');
+  return a.includes(r) || r.includes(a);
+}
+
+function refreshRecommendationsIfVisible() {
+  if (document.getElementById('sRec')?.classList.contains('active')) renderRecommendations();
+}
+
+const COLORS = {
+  purple:'#6C3FC5',blue:'#2563EB',green:'#10b981',amber:'#f59e0b',red:'#ef4444',cyan:'#06b6d4',
+  purpleL:'rgba(108,63,197,.15)',blueL:'rgba(37,99,235,.15)',greenL:'rgba(16,185,129,.15)'
+};
+
+const YEARWISE_DATA = {
+  '2025–2026': {labels:['Jul','Aug','Sep','Oct','Nov','Dec'], placement:[42,55,68,76,84,89], package:[5.8,6.2,6.6,6.9,7.1,7.2]},
+  '2024–2025': {labels:['Jul','Aug','Sep','Oct','Nov','Dec'], placement:[38,49,61,70,81,87], package:[5.4,5.8,6.2,6.5,6.8,7.0]},
+  '2023–2024': {labels:['Jul','Aug','Sep','Oct','Nov','Dec'], placement:[35,46,58,67,78,85], package:[5.1,5.5,5.9,6.2,6.5,6.8]},
+  '2022–2023': {labels:['Jul','Aug','Sep','Oct','Nov','Dec'], placement:[31,42,54,63,74,82], package:[4.7,5.0,5.4,5.7,5.9,6.1]},
+  '2021–2022': {labels:['Jul','Aug','Sep','Oct','Nov','Dec'], placement:[28,39,51,60,69,78], package:[4.2,4.5,4.8,5.0,5.1,5.2]}
+};
+
+function makeChart(id, type, labels, datasets, opts={}) {
+  const el = document.getElementById(id);
+  if (!el || chartsInit[id]) return;
+  chartsInit[id] = true;
+  chartObjects[id] = new Chart(el, {type, data:{labels, datasets}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},...(opts.plugins||{})}, ...opts}});
+}
+
+function updateYearwiseComparison(year) {
+  const data = YEARWISE_DATA[year] || YEARWISE_DATA['2025–2026'];
+  const placementChart = chartObjects.yearwiseChart;
+  const packageChart = chartObjects.pkgTrend;
+  if (!placementChart || !packageChart) return;
+
+  placementChart.data.labels = data.labels;
+  placementChart.data.datasets[0].label = `${year} Placement %`;
+  placementChart.data.datasets[0].data = data.placement;
+  placementChart.update();
+
+  packageChart.data.labels = data.labels;
+  packageChart.data.datasets[0].label = `${year} Avg LPA`;
+  packageChart.data.datasets[0].data = data.package;
+  packageChart.update();
+}
+
+function initStudentCharts() {
+  makeChart('cgpaTrend','line',['Sem 1','Sem 2','Sem 3','Sem 4','Sem 5','Sem 6'],[{label:'CGPA',data:[8.2,8.4,8.6,8.5,8.7,8.5],borderColor:COLORS.purple,backgroundColor:COLORS.purpleL,borderWidth:2.5,pointBackgroundColor:COLORS.purple,pointRadius:5,fill:true,tension:.4}]);
+  makeChart('skillsRadar','radar',['Java','Python','SQL','Web Dev','ML','DSA'],[{data:[90,85,75,80,70,65],backgroundColor:'rgba(108,63,197,.15)',borderColor:COLORS.purple,borderWidth:2,pointBackgroundColor:COLORS.purple}],{scales:{r:{suggestedMin:0,suggestedMax:100,ticks:{display:false},pointLabels:{font:{size:11,family:'Sora'}}}}});
+  makeChart('batchPlace','doughnut',['Placed','In Process','Not Placed','Unwilling'],[{data:[221,15,12,8],backgroundColor:['#10b981','#f59e0b','#ef4444','#94a3b8'],borderWidth:0}],{plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Sora',size:11},boxWidth:10,padding:12}}}});
+  makeChart('acadChart','bar',['S1','S2','S3','S4','S5','S6'],[{label:'CGPA',data:[8.2,8.4,8.6,8.5,8.7,8.5],backgroundColor:[COLORS.purple,COLORS.purple,COLORS.purple,COLORS.purple,COLORS.purple,'rgba(108,63,197,.5)'],borderRadius:6}]);
+}
+
+function initFacultyCharts() {
+  makeChart('deptCGPA','bar',['CS','IT','ECE','EEE','Mech'],[{data:[7.82,7.65,7.45,7.30,6.90],backgroundColor:[COLORS.purple,COLORS.blue,COLORS.green,COLORS.amber,COLORS.cyan],borderRadius:6}]);
+  makeChart('placeStatus','doughnut',['Placed','In Process','Not Placed','Unwilling'],[{data:[221,15,12,8],backgroundColor:['#10b981','#f59e0b','#ef4444','#94a3b8'],borderWidth:0}],{plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Sora',size:11},boxWidth:10,padding:10}}}});
+  makeChart('yearPerf','bar',['1st Year','2nd Year','3rd Year','4th Year'],[{data:[7.40,7.68,7.95,8.20],backgroundColor:[COLORS.blue,COLORS.purple,COLORS.green,COLORS.amber],borderRadius:6}]);
+  makeChart('internChart','bar',['Infosys','TCS','Wipro','HCL','Accenture'],[{data:[48,38,24,18,14],backgroundColor:COLORS.purple,borderRadius:4}],{indexAxis:'y'});
+  makeChart('internPie','doughnut',['Completed','Ongoing','Upcoming'],[{data:[186,24,38],backgroundColor:[COLORS.green,COLORS.amber,COLORS.blue],borderWidth:0}],{plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Sora',size:11},boxWidth:10}}}});
+  makeChart('salaryDist','bar',['3–5L','5–7L','7–10L','10–15L','15–25L'],[{data:[18,82,74,38,9],backgroundColor:COLORS.purple,borderRadius:4}]);
+  makeChart('yearwiseChart','line',YEARWISE_DATA['2025–2026'].labels,[{label:'2025–2026 Placement %',data:YEARWISE_DATA['2025–2026'].placement,borderColor:COLORS.purple,backgroundColor:COLORS.purpleL,borderWidth:2.5,fill:true,tension:.4,pointRadius:5,pointBackgroundColor:COLORS.purple}]);
+  makeChart('pkgTrend','line',YEARWISE_DATA['2025–2026'].labels,[{label:'2025–2026 Avg LPA',data:YEARWISE_DATA['2025–2026'].package,borderColor:COLORS.green,backgroundColor:COLORS.greenL,borderWidth:2.5,fill:true,tension:.4,pointRadius:5,pointBackgroundColor:COLORS.green}]);
+  makeChart('hiringPattern','bar',['TCS','Infosys','Wipro','Zoho','Google'],[{data:[68,52,38,24,2],backgroundColor:[COLORS.purple,COLORS.blue,COLORS.green,COLORS.amber,COLORS.red],borderRadius:4}]);
+  makeChart('demandSkills','bar',['DSA','Python','Java','SQL','React','ML','Cloud'],[{data:[88,82,78,70,65,60,55],backgroundColor:COLORS.blue,borderRadius:4}],{indexAxis:'y'});
+}
+
+function initAdminCharts() {
+  makeChart('statsOverview','bar',['Placed','With Internship','CGPA>8','Certs Uploaded','Alumni'],[{data:[89,75,42,68,35],backgroundColor:[COLORS.green,COLORS.purple,COLORS.blue,COLORS.amber,COLORS.cyan],borderRadius:5}]);
+  makeChart('genderChart','doughnut',['Male','Female'],[{data:[148,100],backgroundColor:[COLORS.blue,COLORS.purple],borderWidth:0}],{plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Sora',size:11},boxWidth:10}}}});
+  makeChart('adminPlaceChart','bar',['CS','IT','ECE','EEE','Mech'],[{label:'Placed',data:[92,88,82,78,70],backgroundColor:COLORS.green,borderRadius:4},{label:'Not Placed',data:[8,12,18,22,30],backgroundColor:'rgba(239,68,68,.4)',borderRadius:4}],{plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Sora',size:11},boxWidth:10}}}});
+  makeChart('salaryAnalysis','bar',['TCS','Infosys','Wipro','Zoho','Microsoft','Google'],[{label:'Avg LPA',data:[6.0,5.5,5.8,9.5,18,25],backgroundColor:[COLORS.blue,COLORS.purple,COLORS.green,COLORS.amber,COLORS.cyan,COLORS.red],borderRadius:5}]);
+}
+
+function initAlumniSkillChart() {
+  makeChart('alumniSkillChart','bar',['DSA','Python','Java','System Design','SQL','Cloud','React','ML'],[{data:[92,88,84,78,72,68,62,58],backgroundColor:COLORS.purple,borderRadius:4}],{indexAxis:'y'});
+}
+
+function initRoleChart() {
+  makeChart('roleChart','doughnut',['SWE','Data Scientist','DevOps','PM','Consultant','Others'],[{data:[42,18,12,8,10,10],backgroundColor:[COLORS.purple,COLORS.blue,COLORS.green,COLORS.amber,COLORS.cyan,'#94a3b8'],borderWidth:0}],{plugins:{legend:{display:true,position:'bottom',labels:{font:{family:'Sora',size:11},boxWidth:10}}}});
+}
+
+function initChartOnPage(pageId) {
+  if (pageId === 'fDash' && !chartsInit.deptCGPA) initFacultyCharts();
+  if (pageId === 'aDash' && !chartsInit.statsOverview) initAdminCharts();
+}
+</script>
+</body>
+</html>
